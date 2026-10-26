@@ -6,4 +6,9 @@ app.get("/", (req, res) => {
     text: "World"
   });
 });
+
+const userRouter = require("./routes/users");
+
+app.use("/users", userRouter);
+
 app.listen(300); // http://localhost:300
