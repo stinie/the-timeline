@@ -1,0 +1,19 @@
+{
+  "name": "the-timeline",
+  "version": "1.0.0",
+  "description": "Assignment 1 - The timeline",
+  "homepage": "https://github.com/stinie/the-timeline#readme",
+  "bugs": {
+    "url": "https://github.com/stinie/the-timeline/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/stinie/the-timeline.git"
+  },
+  "author": "Christine Fürst",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
