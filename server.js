@@ -1,8 +1,9 @@
 const express = require("express");
 const app = express();
 
-app.set("view engine", "ejs");
+
 app.use(express.static("public"));
+app.use(express.urlencoded({ extended: true }));
 
 // Keep for learning purposes
 // app.get("/", (req, res) => {
@@ -11,8 +12,10 @@ app.use(express.static("public"));
 //   });
 // });
 
+app.set("view engine", "ejs");
+
 const userRouter = require("./routes/users");
-const { escapeXML } = require("ejs");
+
 
 app.use("/users", userRouter);
 
