@@ -1,6 +1,11 @@
 const express = require("express");
 const router = express.Router();
 
+function logger(req, res, next) {
+  console.log(req.originalUrl);
+  next();
+}
+
 router.use(logger);
 
 // Static routes
@@ -36,10 +41,5 @@ router.param("id", (reg, res, next, id) => {
   next();
 });
 
-
-function logger(req, res, next) {
-  console.log(req.originalUrl);
-  next();
-}
 
 module.exports = router;
