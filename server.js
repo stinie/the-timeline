@@ -4,13 +4,13 @@ const express = require("express");
 // Load Morgan, the HTTP request-logging middleware.
 const morgan = require("morgan");
 
-// Load the posts from the project's JSON data file.
-const posts = require("./data/posts.json");
+// Load the posts router.
+const postRouter = require("./routes/posts");
 
 // Create the Express app that handles requests and responses.
 const app = express();
 
-// Handle / first, rendering views/index.ejs.
+// Configure EJS as the template engine for rendering views.
 app.set("view engine", "ejs");
 
 // Parse form data from incoming requests and make the submitted values available in req.body.
@@ -18,10 +18,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json()); // Add JSON body parsing middleware
 app.use(morgan("dev")); // Log each incoming request in Morgan's concise "dev" format.
 
-// Render the EJS home page with the posts when the browser requests /.
-app.get("/", (req, res) => {
-  res.render("index", { posts });
-});
+// Let the posts router handle the home page.
+app.use("/", postRouter);
 
 // Serve files from public, such as public/style.css at /style.css.
 app.use(express.static("public"));
