@@ -1,3 +1,4 @@
+// Kept for learning purposes: these routes are from the earlier Express exercise.
 const express = require("express");
 const router = express.Router();
 
