@@ -20,7 +20,7 @@
 
       <% posts.forEach(post => { %>
         <article class="message">
-          <p class="message-meta"><%= post.authorName %> — <%= post.createdAt %></p>
+          <p class="message-meta"><%= post.authorName %> — <%= post.formattedDate %></p>
           <p><%= post.message %></p>
         </article>
       <% }) %>
