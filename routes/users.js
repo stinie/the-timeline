@@ -9,6 +9,7 @@ router.use(logger);
 
 // Static routes
 router.get("/", (req, res) => {
+  // console.log(req.query.name);
   res.send("User List");
 });
 
