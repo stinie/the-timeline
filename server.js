@@ -4,6 +4,7 @@ const app = express();
 
 app.use(express.static("public"));
 app.use(express.urlencoded({ extended: true }));
+app.use(express.json()); // Add JSON body parsing middleware
 
 // Keep for learning purposes
 // app.get("/", (req, res) => {
