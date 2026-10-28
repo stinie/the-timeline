@@ -1,4 +1,5 @@
 @import url("https://cdn.jsdelivr.net/fontsource/css/commit-mono@5.3.0/index.css");
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 *,
 *::before,
@@ -6,10 +7,18 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
- /* TODO: Add Josh Comeau's Custom CSS Reset as a final polish pass. */
+  /* TODO: Add Josh Comeau's Custom CSS Reset as a final polish pass. */
 }
 
 body {
+  font-family: "Inter", sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+h1,
+.post-meta,
+footer {
   font-family: "Commit Mono", monospace;
 }
 
@@ -22,11 +31,14 @@ body {
 header {
   grid-row: 1;
   padding: 1.5rem;
-  border-bottom: 0.125rem solid black; /* 2px at 16px root font size; using rem for learning. */
+  border-bottom: 0.125rem solid black;
+  /* 2px at 16px root font size; using rem for learning. */
 }
 
 main {
   grid-row: 2;
+  width: 100%;
+  max-width: 800px;
 }
 
 footer {
@@ -35,10 +47,10 @@ footer {
   border-top: 0.125rem solid black;
 }
 
-.message {
+.post {
   margin: 2rem;
 }
 
-.message-body {
-  margin-left: 1.5rem;
+.post-body {
+  margin-left: 1rem;
 }

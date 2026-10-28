@@ -20,12 +20,12 @@
     <main>
 
       <% posts.forEach(post=> { %>
-        <article class="message">
-          <p class="message-meta">
+        <article class="post">
+          <p class="post-meta">
             <%= post.authorName %> — <%= post.formattedDate %>
           </p>
-          <p class="message-body">
-            <%= post.message %>
+          <p class="post-body">
+            <%= post.content %>
           </p>
         </article>
         <% }) %>
@@ -35,9 +35,9 @@
     <footer>
       <p>
         Built with
-        <a href="https://nodejs.org/">Node.js</a> ·
-        <a href="https://expressjs.com/">Express.js</a> ·
-        <a href="https://commitmono.com/">Commit Mono</a>
+        <a href="https://nodejs.org/" target="_blank">Node.js</a> ·
+        <a href="https://expressjs.com/" target="_blank">Express.js</a> ·
+        <a href="https://commitmono.com/" target="_blank">Commit Mono</a>
       </p>
     </footer>
   </div>
