@@ -1,13 +1,19 @@
 // Load Express so this file can create and configure the web server.
 const express = require("express");
+
+// Load Morgan, the HTTP request-logging middleware.
+const morgan = require("morgan");
+
 // Create the Express app that handles requests and responses.
 const app = express();
 
 // Handle / first, rendering views/index.ejs.
 app.set("view engine", "ejs");
 
+// Parse form data from incoming requests and make the submitted values available in req.body.
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json()); // Add JSON body parsing middleware
+app.use(morgan("dev")); // Log each incoming request in Morgan's concise "dev" format.
 
 // Render the EJS home page when the browser requests the root URL (/).
 app.get("/", (req, res) => {
