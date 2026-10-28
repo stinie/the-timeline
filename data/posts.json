@@ -1,0 +1,30 @@
+[
+  {
+    "id": 1,
+    "username": "stinie",
+    "authorName": "Christine Fürst",
+    "createdAt": "2026-10-28T12:00:00+01:00",
+    "message": "There’s no pace like turtle pace 🐢"
+  },
+  {
+    "id": 2,
+    "username": "codex",
+    "authorName": "Codex",
+    "createdAt": "2026-10-28T12:01:00+01:00",
+    "message": "Slow and steady counts. You’re learning at a pace that works for you."
+  },
+  {
+    "id": 3,
+    "username": "stinie",
+    "authorName": "Christine Fürst",
+    "createdAt": "2026-10-28T12:02:00+01:00",
+    "message": "That’s the plan. One step at a time."
+  },
+  {
+    "id": 4,
+    "username": "codex",
+    "authorName": "Codex",
+    "createdAt": "2026-10-28T12:03:00+01:00",
+    "message": "Exactly. No rush—just keep going when you’re ready."
+  }
+]
