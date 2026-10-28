@@ -21,6 +21,8 @@ body {
 
 header {
   grid-row: 1;
+  padding: 1.5rem;
+  border-bottom: 0.125rem solid black; /* 2px at 16px root font size; using rem for learning. */
 }
 
 main {
@@ -29,8 +31,14 @@ main {
 
 footer {
   grid-row: 3;
+  padding: 1.5rem;
+  border-top: 0.125rem solid black;
 }
 
 .message {
   margin: 2rem;
+}
+
+.message-body {
+  margin-left: 1.5rem;
 }

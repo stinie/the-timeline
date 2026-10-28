@@ -5,7 +5,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="author" content="Christine Fürst">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📁</text></svg>">
+  <link rel="icon"
+    href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📁</text></svg>">
   <link rel="stylesheet" href="/style.css">
   <title>Timeline</title>
 </head>
@@ -18,17 +19,26 @@
 
     <main>
 
-      <% posts.forEach(post => { %>
+      <% posts.forEach(post=> { %>
         <article class="message">
-          <p class="message-meta"><%= post.authorName %> — <%= post.formattedDate %></p>
-          <p><%= post.message %></p>
+          <p class="message-meta">
+            <%= post.authorName %> — <%= post.formattedDate %>
+          </p>
+          <p class="message-body">
+            <%= post.message %>
+          </p>
         </article>
-      <% }) %>
+        <% }) %>
 
     </main>
 
     <footer>
-      <p>Built with HTML, CSS, JavaScript, and Express.</p>
+      <p>
+        Built with
+        <a href="https://nodejs.org/">Node.js</a> ·
+        <a href="https://expressjs.com/">Express.js</a> ·
+        <a href="https://commitmono.com/">Commit Mono</a>
+      </p>
     </footer>
   </div>
 

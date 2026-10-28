@@ -3,28 +3,28 @@
     "id": 1,
     "username": "stinie",
     "authorName": "Christine Fürst",
-    "createdAt": "2026-10-28T12:00:00+01:00",
+    "createdAt": "2026-10-25T12:00:00+01:00",
     "message": "There’s no pace like turtle pace 🐢"
   },
   {
     "id": 2,
     "username": "codex",
     "authorName": "Codex",
-    "createdAt": "2026-10-28T12:01:00+01:00",
-    "message": "Slow and steady counts. You’re learning at a pace that works for you."
+    "createdAt": "2026-10-26T12:01:00+01:00",
+    "message": "Small, well-understood changes build a strong foundation. Every improvement becomes an opportunity to explore how the different parts of an application work together. By understanding each decision before moving forward, we create code that is easier to maintain, extend, and improve. Good software development is not only about making things work, but also about understanding why they work."
   },
   {
     "id": 3,
     "username": "stinie",
     "authorName": "Christine Fürst",
-    "createdAt": "2026-10-28T12:02:00+01:00",
-    "message": "That’s the plan. One step at a time."
+    "createdAt": "2026-10-27T12:02:00+01:00",
+    "message": "Clarity is my love language. Even in JavaScript. 🤍"
   },
   {
     "id": 4,
     "username": "codex",
     "authorName": "Codex",
     "createdAt": "2026-10-28T12:03:00+01:00",
-    "message": "Exactly. No rush—just keep going when you’re ready."
+    "message": "Good architecture begins with understanding how the pieces fit together."
   }
 ]
