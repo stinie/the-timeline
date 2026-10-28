@@ -19,8 +19,14 @@ router.get("/new", (req, res) => {
 });
 
 router.post("/", (req, res) => {
-  console.log(req.body.firstName); // put before res.send
-  res.send("Create User");
+  const isValid = true;
+  if (isValid) {
+    users.push({ firstName: req.body.firstName });
+    res.redirect(`/users/${users.length - 1}`);
+  } else {
+    console.log("Error");
+    res.render("users/new", {firstName: req.body.firstName}); // populate input field value back to the users
+  }
 });
 
 // Dynamic parameter
