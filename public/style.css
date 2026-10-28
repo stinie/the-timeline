@@ -1,0 +1,36 @@
+@import url("https://cdn.jsdelivr.net/fontsource/css/commit-mono@5.3.0/index.css");
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+ /* TODO: Add Josh Comeau's Custom CSS Reset as a final polish pass. */
+}
+
+body {
+  font-family: "Commit Mono", monospace;
+}
+
+.page {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  min-height: 100vh;
+}
+
+header {
+  grid-row: 1;
+}
+
+main {
+  grid-row: 2;
+}
+
+footer {
+  grid-row: 3;
+}
+
+.message {
+  margin: 2rem;
+}
