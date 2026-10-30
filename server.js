@@ -5,7 +5,7 @@ const express = require("express");
 const morgan = require("morgan");
 
 // Load the posts router.
-const postRouter = require("./routes/posts");
+const postsRouter = require("./routes/postsRouter");
 
 // Create the Express app that handles requests and responses.
 const app = express();
@@ -19,7 +19,7 @@ app.use(express.json()); // Add JSON body parsing middleware
 app.use(morgan("dev")); // Log each incoming request in Morgan's concise "dev" format.
 
 // Let the posts router handle the home page.
-app.use("/", postRouter);
+app.use("/", postsRouter);
 
 // Serve files from public, such as public/style.css at /style.css.
 app.use(express.static("public"));
@@ -30,4 +30,4 @@ app.use(express.static("public"));
 // app.use("/users", userRouter);
 
 
-app.listen(300); // http://localhost:300
+app.listen(3000); // http://localhost:3000

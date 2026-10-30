@@ -18,6 +18,12 @@
     </header>
 
     <main>
+      
+      <% if (postsError) { %>
+        <article class="post error">
+          <p role="alert"><%= postsError %></p>
+        </article>
+      <% } %>
 
       <% posts.forEach(post=> { %>
         <article class="post">

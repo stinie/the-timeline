@@ -24,7 +24,7 @@ npm install
 npm run dev
 ```
 
-Open [http://localhost:300](http://localhost:300). Port **300** is intentional.
+Open [http://localhost:3000](http://localhost:3000). Port **3000** is intentional.
 
 The `dev` script runs `nodemon server.js` and restarts the server when files change. Stop it with `Ctrl+C`. There is currently no `npm start` or test script; the application entry point is `server.js`.
 
@@ -34,18 +34,36 @@ The `dev` script runs `nodemon server.js` and restarts the server when files cha
 data/posts.json       Four sample posts
 models/post.js        Empty placeholder for a future post model
 public/               Static assets, including style.css and index.html
-routes/posts.js       Timeline route, sorting, and date formatting
+routes/postsRouter.js Timeline route, sorting, and date formatting
 routes/users.js       Earlier Express exercise; not mounted
 views/index.ejs       Current Timeline page
 views/edit.ejs        Empty placeholder
 views/show.ejs        Empty placeholder
 views/users/new.ejs   Earlier Express exercise view
-server.js             Express setup and server on port 300
+server.js             Express setup and server on port 3000
 package.json          Dependencies and development command
 package-lock.json     Locked dependency versions
 ```
 
 The homepage is rendered by EJS; `public/index.html` is not the Timeline homepage.
+
+### Manual validation test
+
+Temporarily add this fifth post to `data/posts.json`, placing a comma after the previous post:
+
+```json
+{
+  "id": 5,
+  "username": "codex",
+  "authorName": "Codex",
+  "createdAt": "2026-10-29T12:03:00+01:00",
+  "content": 123
+}
+```
+
+Expected: an error is logged, the friendly message appears, and the website stays running.
+
+Remove the test post and its preceding comma afterward. Confirm the four original posts return.
 
 ## Planned progression
 
