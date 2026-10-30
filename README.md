@@ -6,7 +6,7 @@ Christine Fürst’s learning project: one Timeline evolving through five assign
 
 A Node.js and Express application that renders four sample posts from `data/posts.json` using EJS.
 
-- The posts router is mounted at `/` and renders `views/index.ejs`.
+- The posts router is mounted at `/` and delegates rendering of `views/index.ejs` to the posts controller.
 - Posts appear newest first, sorted by their original ISO timestamps.
 - Display dates use UTC and ordinal suffixes, such as `October 28th 2026`, without replacing the original timestamps.
 - Minimal CSS uses Commit Mono, loaded from a CDN. The footer links to Node.js, Express.js, and Commit Mono.
@@ -26,23 +26,22 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000). Port **3000** is intentional.
 
-The `dev` script runs `nodemon server.js` and restarts the server when files change. Stop it with `Ctrl+C`. There is currently no `npm start` or test script; the application entry point is `server.js`.
+The `dev` script runs `nodemon server.js` and restarts the server when files change. Use `npm start` to run with Node directly. Stop either with `Ctrl+C`. There is currently no test script; the application entry point is `server.js`.
 
 ## Project structure
 
 ```text
-data/posts.json       Four sample posts
-models/post.js        Empty placeholder for a future post model
-public/               Static assets, including style.css and index.html
-routes/postsRouter.js Timeline route, sorting, and date formatting
-routes/users.js       Earlier Express exercise; not mounted
-views/index.ejs       Current Timeline page
-views/edit.ejs        Empty placeholder
-views/show.ejs        Empty placeholder
-views/users/new.ejs   Earlier Express exercise view
-server.js             Express setup and server on port 3000
-package.json          Dependencies and development command
-package-lock.json     Locked dependency versions
+controllers/postsController.js  Post loading, validation, date formatting, and rendering
+data/posts.json                 Four sample posts
+models/post.js                  Empty placeholder for a future post model
+public/                         Static assets, including style.css and index.html
+routes/postsRouter.js           Connects the homepage route to the posts controller
+views/index.ejs                 Current Timeline page
+views/edit.ejs                  Empty placeholder
+views/show.ejs                  Empty placeholder
+server.js                       Express setup and server on port 3000
+package.json                    Dependencies and development command
+package-lock.json               Locked dependency versions
 ```
 
 The homepage is rendered by EJS; `public/index.html` is not the Timeline homepage.

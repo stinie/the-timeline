@@ -24,10 +24,5 @@ app.use("/", postsRouter);
 // Serve files from public, such as public/style.css at /style.css.
 app.use(express.static("public"));
 
-// Send requests starting with /users to the users router.
-// For example, /users/new is handled by that router.
-// const userRouter = require("./routes/users");
-// app.use("/users", userRouter);
-
-
+// Start the server on port 3000.
 app.listen(3000); // http://localhost:3000
