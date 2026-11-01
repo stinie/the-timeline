@@ -1,5 +1,3 @@
-Christine, **replace everything in `README.md` with the text below**. It brings the sections together and distinguishes what works now from what comes later. I haven’t changed any files.
-
 # The Timeline
 
 Christine Fürst’s learning project: one Timeline evolving through five assignments, with small, well-understood changes at each stage.
