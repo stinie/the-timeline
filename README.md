@@ -64,6 +64,25 @@ Expected: an error is logged, the friendly message appears, and the website stay
 
 Remove the test post and its preceding comma afterward. Confirm the four original posts return.
 
+## Preserving the stages with Git branches
+
+Each assignment will build on the previous one. I’ll preserve each completed stage on its own branch, with `main` holding the latest completed assignment.
+
+| Branch | Stage |
+| --- | --- |
+| `main` | Latest completed assignment |
+| `the-timeline/json` | Assignment 1 — JSON |
+| `the-timeline/database` | Assignment 2 — MongoDB CRUD |
+| `the-timeline/comments` | Assignment 3 — Comments |
+| `the-timeline/api` | Assignment 4 — API |
+| `the-timeline/authentication` | Assignment 5 — Authentication |
+
+I’ll first preserve Assignment 1 on `the-timeline/json`. For each following assignment, I’ll create its branch from the updated `main`, develop and check the application there, then merge the completed work into `main`. The assignment branch will remain as a snapshot.
+
+Each stage should run independently when checked out with its required dependencies and configuration. Git preserves the committed code and documentation; it does not preserve live MongoDB data.
+
+These branches are planned; currently, only `main` exists.
+
 ## Planned progression
 
 | Assignment | Focus | Status |
