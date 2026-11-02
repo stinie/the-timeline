@@ -33,12 +33,15 @@ const postsHandler = (req, res) => {
         ...post,
         formattedDate: formatDate(post.createdAt)
       }));
-
+      
+      // Render the homepage with posts and a deletion success flag derived from the URL query.
       res.render("index", {
         posts: formattedPosts,
         title: "Home",
-        postsError: null
+        postsError: null,
+        deleted: req.query.deleted === "1"
       });
+
     })
     .catch((err) => {
       console.error("Could not retrieve posts:", err);
@@ -46,7 +49,8 @@ const postsHandler = (req, res) => {
       res.status(500).render("index", {
         posts: [],
         title: "Home",
-        postsError: "Posts are temporarily unavailable. Please try again later."
+        postsError: "Posts are temporarily unavailable. Please try again later.",
+        deleted: false
       });
     });
 };
@@ -87,7 +91,7 @@ const showPostHandler = (req, res) => {
       }
 
       res.render("show", {
-        title: "Show post",
+        title: "Show One Post",
         post: {
           ...post,
           formattedDate: formatDate(post.createdAt)
@@ -106,9 +110,45 @@ const showPostHandler = (req, res) => {
       res.status(500).render("index", {
         posts: [],
         title: "Post unavailable",
-        postsError: "This post is temporarily unavailable. Please try again later."
+        postsError: "This post is temporarily unavailable. Please try again later.",
+        deleted: false
       });
     });
 };
 
-module.exports = { postsHandler, createPostHandler, showPostHandler };
+// Delete a post by its ID, then return to the homepage.
+const deletePostHandler = (req, res) => {
+  Post.findByIdAndDelete(req.params.id)
+    .then(post => {
+      if (!post) {
+        return res.status(404).render("404", {
+          title: "Post not found"
+        });
+      }
+      // Return to the homepage with a deletion success indicator.
+      res.redirect("/?deleted=1");
+    })
+    .catch(err => {
+      if (err.name === "CastError") {
+        return res.status(404).render("404", {
+          title: "Post not found"
+        });
+      }
+
+      console.error("Could not delete post:", err);
+
+      res.status(500).render("index", {
+        posts: [],
+        title: "Delete unsuccessful",
+        postsError: "This post could not be deleted. Please try again later.",
+        deleted: false
+      });
+    });
+};
+
+module.exports = {
+  postsHandler,
+  createPostHandler,
+  showPostHandler,
+  deletePostHandler
+};

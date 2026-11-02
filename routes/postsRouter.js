@@ -13,5 +13,8 @@ postsRouter.post("/", postsController.createPostHandler);
 // Display one post using the ID supplied in the URL.
 postsRouter.get("/show/:id", postsController.showPostHandler);
 
+// Send delete requests to the posts controller.
+postsRouter.post("/delete/:id", postsController.deletePostHandler);
+
 // Export the postsRouter so server.js can mount it in the Express app.
 module.exports = postsRouter;

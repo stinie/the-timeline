@@ -35,6 +35,14 @@
           </article>
           <% } %>
 
+          <% if (deleted) { %>
+          <article class="post success">
+            <p role="status">
+              Post deleted successfully.
+            </p>
+          </article>
+          <% } %>
+
           <% posts.forEach(post=> { %>
           <article class="post">
           <p class="post-meta">

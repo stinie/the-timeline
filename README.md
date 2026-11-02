@@ -6,7 +6,7 @@ Christine Fürst’s learning project: one Timeline evolving through five assign
 
 The `database` branch stores posts in MongoDB Atlas and renders them using Express and EJS. Creating and displaying posts on the homepage work, with newest-first sorting, readable UTC dates and previews for long messages.
 
-Single-post links, routing and the controller are in place; the `show.ejs` template is next. Editing and deleting posts are still to be added.
+Posts can now be created, viewed individually, and deleted. The single-post page displays the full message and its formatted date. Editing is the next step.
 
 ## Run locally
 
@@ -46,13 +46,14 @@ data/posts.json                 Original sample data; no longer used by the appl
 data/posts-atlas-import.json     Extended JSON prepared for Atlas insertion
 models/post.js                  Mongoose post schema and model
 public/style.css                Shared styles
-routes/postsRouter.js           Homepage route connected to the controller
-views/index.ejs                 Timeline page
+routes/postsRouter.js           Routes for displaying, creating and deleting posts
+views/index.ejs                 Timeline page, message form and status messages
 views/partials/head.ejs         Shared head with a dynamic page title
+views/partials/header.ejs       Shared header with a homepage link
 views/partials/footer.ejs       Shared footer
-views/404.ejs                   Page for unmatched requests
-views/edit.ejs                  Empty placeholder
-views/show.ejs                  Empty placeholder
+views/404.ejs                   Page for unmatched requests and missing posts
+views/edit.ejs                  Layout placeholder; editing is not implemented
+views/show.ejs                  Full message, formatted date and action controls
 server.js                       Express setup, middleware and MongoDB connection
 package.json                    Dependencies and run commands
 package-lock.json               Locked dependency versions
@@ -67,7 +68,6 @@ The posts router delegated rendering to a separate controller. Minimal CSS used 
 This implementation and its JSON validation test remain preserved on the `json` branch.
 
 ## Assignment 2 — Database
-
 
 ### Connecting to MongoDB
 
@@ -113,17 +113,7 @@ Each post now has a “See more” link to `/show/<post._id>`. I revisited JavaS
 
 The GET route `/show/:id` calls `showPostHandler`. The controller reads `req.params.id`, retrieves the document with `Post.findById()`, and passes the full post and its formatted date to `show.ejs`. The controller chooses the template; the URL does not select it automatically.
 
-The handler returns a 404 page for a missing post or an invalid ObjectId, and a 500 response for other retrieval errors. The single-post page now displays the full message and its formatted date. Editing and deleting posts are the next steps.
-
-Under **`### Message previews and single-post routing`**, replace the final sentence:
-
-> Displaying the full post in `show.ejs` is the next step.
-
-with:
-
-> The `show.ejs` template now displays the full message and its formatted date.
-
-Then paste this **immediately after that paragraph, before `### Simplifying the templates`**:
+The handler returns a 404 page for a missing post or an invalid ObjectId, and a 500 response for other retrieval errors. The single-post page now displays the full message and its formatted date. Deleting posts is also implemented; editing is the next step.
 
 ### Testing the single-post error response
 
@@ -140,7 +130,7 @@ Opening a valid single-post link displayed the friendly error message through `i
 
 This helped me understand that the controller chooses which template to render. `show.ejs` displays a successfully retrieved post; it does not need error markup because retrieval failures render `index.ejs` instead.
 
-After testing, remove the temporary block and reload the same link to confirm that the full post displays again. This test does not change database data.
+The temporary block is no longer present in the controller. This test does not change database data.
 
 ### Moving the sample data into Atlas
 
@@ -154,21 +144,23 @@ Finding the connected collection was part of the learning. The path that worked 
 
 I confirmed that all four documents appeared in Atlas and displayed correctly on the homepage.
 
-
 ### Single-post view and action controls
 
 The `show.ejs` template displays the full message and its formatted date, using the shared head, header and footer partials.
 
-I added a Delete button inside a POST form targeting `/delete/:id`, and an Edit post link targeting `/edit/:id`. These controls are prepared; their routes and controller handlers still need to be implemented.
+The Delete button submits a POST request to `/delete/:id`. The router calls `deletePostHandler`, which removes the post from MongoDB using `Post.findByIdAndDelete()`.
 
-CSS Grid places the actions side by side on the right. Edit and Post a message share a blue background, while Delete uses red.
+After a successful deletion, the controller redirects to `/?deleted=1`. The homepage uses this query parameter to display “Post deleted successfully.” in green.
 
+A missing post or invalid ObjectId returns a 404 page. Other deletion errors return status 500 and display a friendly message through `index.ejs`.
+
+The Edit post link targets `/edit/:id`; its route and handler are still to be implemented. CSS Grid places the actions side by side on the right. Edit and Post a message share a blue background, while Delete uses red.
 
 ### Simplifying the templates
 
 I extracted the shared head and footer into EJS partials and passed a page title from the controller. I removed the old static homepage and added an EJS 404 page.
 
-The 404 handler stays after the router and static middleware so it handles unmatched requests. A shared navigation partial is planned.
+The 404 handler stays after the router and static middleware so it handles unmatched requests. The shared header partial provides a homepage link.
 
 ## Preserving the stages with Git branches
 
@@ -200,7 +192,7 @@ In my separate Node.js Crash Course repository, `lesson-1` through `lesson-9` ha
 | Assignment | Focus | Status |
 | --- | --- | --- |
 | 1 | JSON: display sample posts with Express and EJS | Implemented; preserved on `json` |
-| 2 | MongoDB CRUD | Create and read implemented; update and delete planned. |
+| 2 | MongoDB CRUD | Create, read and delete implemented; update planned. |
 | 3 | Comments on posts | Planned |
 | 4 | API endpoints for Timeline data | Planned |
 | 5 | Authentication and access control | Planned |

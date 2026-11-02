@@ -58,6 +58,11 @@ footer {
 .error {
   color: red;
 }
+
+.success {
+  color: green;
+}
+
 /* Stack the label, message field and submit button in separate rows. */
 .post-form {
   display: grid;
