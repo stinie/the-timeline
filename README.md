@@ -68,6 +68,7 @@ This implementation and its JSON validation test remain preserved on the `json` 
 
 ## Assignment 2 — Database
 
+
 ### Connecting to MongoDB
 
 I created a separate Atlas project, cluster and database named `the-timeline`, with a `posts` collection and a dedicated application user.
@@ -112,7 +113,34 @@ Each post now has a “See more” link to `/show/<post._id>`. I revisited JavaS
 
 The GET route `/show/:id` calls `showPostHandler`. The controller reads `req.params.id`, retrieves the document with `Post.findById()`, and passes the full post and its formatted date to `show.ejs`. The controller chooses the template; the URL does not select it automatically.
 
-The handler returns a 404 page for a missing post or an invalid ObjectId, and a 500 response for other retrieval errors. Displaying the full post in `show.ejs` is the next step.
+The handler returns a 404 page for a missing post or an invalid ObjectId, and a 500 response for other retrieval errors. The single-post page now displays the full message and its formatted date. Editing and deleting posts are the next steps.
+
+Under **`### Message previews and single-post routing`**, replace the final sentence:
+
+> Displaying the full post in `show.ejs` is the next step.
+
+with:
+
+> The `show.ejs` template now displays the full message and its formatted date.
+
+Then paste this **immediately after that paragraph, before `### Simplifying the templates`**:
+
+### Testing the single-post error response
+
+I temporarily added this block after `.lean()` and before the existing `.then((post) => ...)` in `showPostHandler`:
+
+```js
+.then(() => {
+  // Temporary test: simulate a database retrieval failure.
+  throw new Error("Testing the single-post error page");
+})
+```
+
+Opening a valid single-post link displayed the friendly error message through `index.ejs`. The handler sets status 500 and renders the homepage template while keeping `/show/<id>` in the address bar.
+
+This helped me understand that the controller chooses which template to render. `show.ejs` displays a successfully retrieved post; it does not need error markup because retrieval failures render `index.ejs` instead.
+
+After testing, remove the temporary block and reload the same link to confirm that the full post displays again. This test does not change database data.
 
 ### Moving the sample data into Atlas
 
@@ -126,6 +154,14 @@ Finding the connected collection was part of the learning. The path that worked 
 
 I confirmed that all four documents appeared in Atlas and displayed correctly on the homepage.
 
+
+### Single-post view and action controls
+
+The `show.ejs` template displays the full message and its formatted date, using the shared head, header and footer partials.
+
+I added a Delete button inside a POST form targeting `/delete/:id`, and an Edit post link targeting `/edit/:id`. These controls are prepared; their routes and controller handlers still need to be implemented.
+
+CSS Grid places the actions side by side on the right. Edit and Post a message share a blue background, while Delete uses red.
 
 
 ### Simplifying the templates

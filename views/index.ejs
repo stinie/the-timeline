@@ -8,51 +8,52 @@
       <div class="page">
 
         <%# Include the shared page header. %>
-          <%- include("./partials/header.ejs") %>
+        <%- include("./partials/header.ejs") %>
 
-            <main>
+        <main>
 
-              <article class="post">
-                <p class="post-meta">
-                  Welcome to The Timeline! This is a simple message board.
-                </p>
-                <form action="/" method="POST" class="post-form">
+          <article class="post">
+            <p class="post-meta">
+              Welcome to The Timeline! This is a simple message board.
+            </p>
+            <form action="/" method="POST" class="post-form">
 
 
-                  <label for="content">Post a message</label>
-                  <textarea name="content" id="content" rows="5" minlength="25" required></textarea>
+              <label for="content">Post a message</label>
+              <textarea name="content" id="content" rows="5" minlength="25" required></textarea>
 
-                  <button type="submit">Post a message</button>
+              <button type="submit">Post a message</button>
 
-                </form>
-              </article>
+            </form>
+          </article>
 
-              <% if (postsError) { %>
-                <article class="post error">
-                  <p role="alert">
-                    <%= postsError %>
-                  </p>
-                </article>
-                <% } %>
+          <% if (postsError) { %>
+          <article class="post error">
+            <p role="alert">
+              <%= postsError %>
+            </p>
+          </article>
+          <% } %>
 
-                  <% posts.forEach(post=> { %>
-                    <article class="post">
-                      <p class="post-meta">
-                        <%= post.authorName %> — <%= post.formattedDate %>
-                      </p>
-                      <p class="post-body">
-                        <%# Shorten long messages on the homepage; keep the full content in MongoDB. %>
-                          <%= post.content.length> 250 ? post.content.slice(0, 250) + "…" : post.content %>
-                          <%# Link to the full post using its MongoDB ID. %>
-                          <a href="/show/<%= post._id %>">See more</a>
-                      </p>
-                    </article>
-                    <% }) %>
+          <% posts.forEach(post=> { %>
+          <article class="post">
+          <p class="post-meta">
+            <%= post.authorName %> — <%= post.formattedDate %>
+          </p>
 
-            </main>
+          <p class="post-body">
+            <%# Shorten long messages on the homepage; keep the full content in MongoDB. %>
+              <%= post.content.length> 250 ? post.content.slice(0, 250) + "…" : post.content %>
+              <%# Link to the full post using its MongoDB ID. %>
+              <a href="/show/<%= post._id %>">See more</a>
+          </p>
+        </article>
+        <% }) %>
 
-            <%# Include the shared footer partial as HTML. %>
-              <%- include("./partials/footer.ejs") %>
+        </main>
+
+        <%# Include the shared footer partial as HTML. %>
+        <%- include("./partials/footer.ejs") %>
 
       </div>
 

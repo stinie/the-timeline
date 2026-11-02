@@ -102,9 +102,12 @@ const showPostHandler = (req, res) => {
       }
 
       console.error("Could not retrieve post:", err);
-      res.status(500).send(
-        "This post is temporarily unavailable. Please try again later."
-      );
+      // Display the retrieval error within the shared Timeline layout.
+      res.status(500).render("index", {
+        posts: [],
+        title: "Post unavailable",
+        postsError: "This post is temporarily unavailable. Please try again later."
+      });
     });
 };
 

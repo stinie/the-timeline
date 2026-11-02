@@ -79,3 +79,38 @@ footer {
   font: inherit;
   cursor: pointer;
 }
+
+/* Align the delete form and edit link side by side on the right. */
+.post-actions {
+  display: grid;
+  grid-template-columns: auto auto;
+  justify-content: end;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+/* Give both controls matching dimensions and typography. */
+.post-actions button,
+.post-actions a {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  border: 1px solid black;
+  border-radius: 0.25rem;
+  font: inherit;
+  line-height: 1.6;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.post-actions button {
+  background: rgb(207 43 39);
+  color: white;
+}
+
+.post-actions a,
+.post-form button {
+  background: rgb(51 112 190);
+  color: white;
+}
