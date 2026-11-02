@@ -75,4 +75,37 @@ const createPostHandler = (req, res) => {
     });
 };
 
-module.exports = { postsHandler, createPostHandler };
+// Retrieve one post by its URL ID and render the full message.
+const showPostHandler = (req, res) => {
+  Post.findById(req.params.id)
+    .lean()
+    .then((post) => {
+      if (!post) {
+        return res.status(404).render("404", {
+          title: "Post not found"
+        });
+      }
+
+      res.render("show", {
+        title: "Show post",
+        post: {
+          ...post,
+          formattedDate: formatDate(post.createdAt)
+        }
+      });
+    })
+    .catch((err) => {
+      if (err.name === "CastError") {
+        return res.status(404).render("404", {
+          title: "Post not found"
+        });
+      }
+
+      console.error("Could not retrieve post:", err);
+      res.status(500).send(
+        "This post is temporarily unavailable. Please try again later."
+      );
+    });
+};
+
+module.exports = { postsHandler, createPostHandler, showPostHandler };

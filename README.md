@@ -4,9 +4,9 @@ Christine Fürst’s learning project: one Timeline evolving through five assign
 
 ## Current stage — Assignment 2: Database
 
-The `database` branch retrieves posts from MongoDB Atlas and renders them using Express and EJS. The four original sample posts now appear from the database, newest first, with readable UTC dates.
+The `database` branch stores posts in MongoDB Atlas and renders them using Express and EJS. Creating and displaying posts on the homepage work, with newest-first sorting, readable UTC dates and previews for long messages.
 
-Creating and displaying posts now work. Editing and deleting posts are still to be added.
+Single-post links, routing and the controller are in place; the `show.ejs` template is next. Editing and deleting posts are still to be added.
 
 ## Run locally
 
@@ -104,6 +104,16 @@ The form uses a single-column CSS grid to place its label, textarea and button i
 
 I also added a shared `header.ejs` partial with a homepage link and credited MongoDB in the footer.
 
+### Message previews and single-post routing
+
+I shortened messages longer than 250 characters on the homepage, adding an ellipsis. The complete content stays in MongoDB.
+
+Each post now has a “See more” link to `/show/<post._id>`. I revisited JavaScript’s spread syntax: `...post` already copies all existing properties, including `_id`, into the formatted post object. The ID was therefore available in EJS without changing `res.render()`. EJS converts the ObjectId to text when rendering the link.
+
+The GET route `/show/:id` calls `showPostHandler`. The controller reads `req.params.id`, retrieves the document with `Post.findById()`, and passes the full post and its formatted date to `show.ejs`. The controller chooses the template; the URL does not select it automatically.
+
+The handler returns a 404 page for a missing post or an invalid ObjectId, and a 500 response for other retrieval errors. Displaying the full post in `show.ejs` is the next step.
+
 ### Moving the sample data into Atlas
 
 With AI assistance, I prepared an Extended JSON file from the four original posts. It omitted the old numeric IDs and represented timestamps as BSON dates using `$date`. The original creation times were preserved, with `updatedAt` initially matching `createdAt`.
@@ -115,6 +125,8 @@ Inserting directly through Atlas bypasses Mongoose validation and automatic time
 Finding the connected collection was part of the learning. The path that worked for me was **Search & Vector Search → Shortcuts → Data Explorer**, then expanding the `the-timeline` cluster, database and `posts` collection.
 
 I confirmed that all four documents appeared in Atlas and displayed correctly on the homepage.
+
+
 
 ### Simplifying the templates
 

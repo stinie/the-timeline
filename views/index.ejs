@@ -41,7 +41,10 @@
                         <%= post.authorName %> — <%= post.formattedDate %>
                       </p>
                       <p class="post-body">
-                        <%= post.content %>
+                        <%# Shorten long messages on the homepage; keep the full content in MongoDB. %>
+                          <%= post.content.length> 250 ? post.content.slice(0, 250) + "…" : post.content %>
+                          <%# Link to the full post using its MongoDB ID. %>
+                          <a href="/show/<%= post._id %>">See more</a>
                       </p>
                     </article>
                     <% }) %>
