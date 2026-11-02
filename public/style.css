@@ -58,3 +58,24 @@ footer {
 .error {
   color: red;
 }
+/* Stack the label, message field and submit button in separate rows. */
+.post-form {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.post-form textarea {
+  width: 100%;
+  padding: 0.75rem;
+  font: inherit;
+  resize: vertical;
+}
+
+.post-form button {
+  justify-self: end;
+  padding: 0.5rem 1rem;
+  font: inherit;
+  cursor: pointer;
+}

@@ -51,4 +51,28 @@ const postsHandler = (req, res) => {
     });
 };
 
-module.exports = { postsHandler };
+// Save a new post with Christine as the default author, then return to the Timeline.
+const createPostHandler = (req, res) => {
+  const post = new Post({
+    username: "stinie",
+    authorName: "Christine Fürst",
+    content: req.body.content
+  });
+
+  post.save()
+    .then(() => {
+      res.redirect("/");
+    })
+    .catch((err) => {
+      console.error("Could not create post:", err);
+
+      const status = err.name === "ValidationError" ? 400 : 500;
+      res.status(status).send(
+        status === 400
+          ? "Please enter a message of at least 25 characters."
+          : "Your post could not be saved. Please try again later."
+      );
+    });
+};
+
+module.exports = { postsHandler, createPostHandler };

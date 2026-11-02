@@ -6,7 +6,7 @@ Christine Fürst’s learning project: one Timeline evolving through five assign
 
 The `database` branch retrieves posts from MongoDB Atlas and renders them using Express and EJS. The four original sample posts now appear from the database, newest first, with readable UTC dates.
 
-Creating, editing and deleting posts through the application are still to be added.
+Creating and displaying posts now work. Editing and deleting posts are still to be added.
 
 ## Run locally
 
@@ -94,6 +94,16 @@ MongoDB returns the posts newest first. `lean()` provides plain JavaScript objec
 
 The original JSON file remains for now, but the application no longer reads it.
 
+### Creating posts from the homepage
+
+I added a message form to `index.ejs`. It sends a POST request to `/`, where the posts router calls `createPostHandler`. The controller saves the message through the Post model, using Christine Fürst as the default author, then redirects to the homepage. The new post appears at the top.
+
+The form uses `required` and `minlength="25"` for browser validation. The Mongoose schema also validates content on the server. I confirmed that the browser rejects a short message and that a valid message is saved and displayed.
+
+The form uses a single-column CSS grid to place its label, textarea and button in separate rows, with the button aligned right.
+
+I also added a shared `header.ejs` partial with a homepage link and credited MongoDB in the footer.
+
 ### Moving the sample data into Atlas
 
 With AI assistance, I prepared an Extended JSON file from the four original posts. It omitted the old numeric IDs and represented timestamps as BSON dates using `$date`. The original creation times were preserved, with `updatedAt` initially matching `createdAt`.
@@ -142,7 +152,7 @@ In my separate Node.js Crash Course repository, `lesson-1` through `lesson-9` ha
 | Assignment | Focus | Status |
 | --- | --- | --- |
 | 1 | JSON: display sample posts with Express and EJS | Implemented; preserved on `json` |
-| 2 | MongoDB CRUD | Database connection and display implemented; create, update and delete planned |
+| 2 | MongoDB CRUD | Create and read implemented; update and delete planned. |
 | 3 | Comments on posts | Planned |
 | 4 | API endpoints for Timeline data | Planned |
 | 5 | Authentication and access control | Planned |

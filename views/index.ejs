@@ -2,40 +2,57 @@
 <html lang="en">
 
 <%# Include the shared head partial as HTML. %>
-<%- include("./partials/head.ejs") %>
+  <%- include("./partials/head.ejs") %>
 
-<body>
-  <div class="page">
-    <header>
-      <h1>Timeline</h1>
-    </header>
+    <body>
+      <div class="page">
 
-    <main>
-      
-      <% if (postsError) { %>
-        <article class="post error">
-          <p role="alert"><%= postsError %></p>
-        </article>
-      <% } %>
+        <%# Include the shared page header. %>
+          <%- include("./partials/header.ejs") %>
 
-      <% posts.forEach(post=> { %>
-        <article class="post">
-          <p class="post-meta">
-            <%= post.authorName %> — <%= post.formattedDate %>
-          </p>
-          <p class="post-body">
-            <%= post.content %>
-          </p>
-        </article>
-        <% }) %>
+            <main>
 
-    </main>
+              <article class="post">
+                <p class="post-meta">
+                  Welcome to The Timeline! This is a simple message board.
+                </p>
+                <form action="/" method="POST" class="post-form">
 
-    <%# Include the shared footer partial as HTML. %>
-    <%- include("./partials/footer.ejs") %>
 
-  </div>
+                  <label for="content">Post a message</label>
+                  <textarea name="content" id="content" rows="5" minlength="25" required></textarea>
 
-</body>
+                  <button type="submit">Post a message</button>
+
+                </form>
+              </article>
+
+              <% if (postsError) { %>
+                <article class="post error">
+                  <p role="alert">
+                    <%= postsError %>
+                  </p>
+                </article>
+                <% } %>
+
+                  <% posts.forEach(post=> { %>
+                    <article class="post">
+                      <p class="post-meta">
+                        <%= post.authorName %> — <%= post.formattedDate %>
+                      </p>
+                      <p class="post-body">
+                        <%= post.content %>
+                      </p>
+                    </article>
+                    <% }) %>
+
+            </main>
+
+            <%# Include the shared footer partial as HTML. %>
+              <%- include("./partials/footer.ejs") %>
+
+      </div>
+
+    </body>
 
 </html>
