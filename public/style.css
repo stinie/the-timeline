@@ -109,13 +109,14 @@ footer {
   cursor: pointer;
 }
 
-.post-actions button {
-  background: rgb(207 43 39);
+.post-actions a,
+.post-form button,
+.post-actions button.edit-post-button {
+  background: rgb(51 112 190);
   color: white;
 }
 
-.post-actions a,
-.post-form button {
-  background: rgb(51 112 190);
+.post-actions button.delete-post-button {
+  background: rgb(207 43 39);
   color: white;
 }

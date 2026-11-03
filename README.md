@@ -4,9 +4,9 @@ Christine Fürst’s learning project: one Timeline evolving through five assign
 
 ## Current stage — Assignment 2: Database
 
-The `database` branch stores posts in MongoDB Atlas and renders them using Express and EJS. Creating and displaying posts on the homepage work, with newest-first sorting, readable UTC dates and previews for long messages.
+The `database` branch stores posts in MongoDB Atlas and renders them using Express and EJS. All four CRUD operations work, with newest-first sorting, readable UTC dates and previews for long messages on the homepage.
 
-Posts can now be created, viewed individually, and deleted. The single-post page displays the full message and its formatted date. Editing is the next step.
+Posts can now be created, viewed individually, edited and deleted. The single-post page displays the full message and its formatted date, with controls for editing and deleting the post.
 
 ## Run locally
 
@@ -41,18 +41,18 @@ The `dev` script runs `nodemon server.js` and restarts after code changes. Use `
 ## Project structure
 
 ```text
-controllers/postsController.js  MongoDB queries, date formatting and rendering
+controllers/postsController.js  CRUD handlers, MongoDB queries, date formatting and rendering
 data/posts.json                 Original sample data; no longer used by the application
 data/posts-atlas-import.json     Extended JSON prepared for Atlas insertion
 models/post.js                  Mongoose post schema and model
 public/style.css                Shared styles
-routes/postsRouter.js           Routes for displaying, creating and deleting posts
+routes/postsRouter.js           Routes for creating, displaying, editing and deleting posts
 views/index.ejs                 Timeline page, message form and status messages
 views/partials/head.ejs         Shared head with a dynamic page title
 views/partials/header.ejs       Shared header with a homepage link
 views/partials/footer.ejs       Shared footer
 views/404.ejs                   Page for unmatched requests and missing posts
-views/edit.ejs                  Layout placeholder; editing is not implemented
+views/edit.ejs                  Prefilled edit form with content validation
 views/show.ejs                  Full message, formatted date and action controls
 server.js                       Express setup, middleware and MongoDB connection
 package.json                    Dependencies and run commands
@@ -113,7 +113,7 @@ Each post now has a “See more” link to `/show/<post._id>`. I revisited JavaS
 
 The GET route `/show/:id` calls `showPostHandler`. The controller reads `req.params.id`, retrieves the document with `Post.findById()`, and passes the full post and its formatted date to `show.ejs`. The controller chooses the template; the URL does not select it automatically.
 
-The handler returns a 404 page for a missing post or an invalid ObjectId, and a 500 response for other retrieval errors. The single-post page now displays the full message and its formatted date. Deleting posts is also implemented; editing is the next step.
+The handler returns a 404 page for a missing post or an invalid ObjectId, and a 500 response for other retrieval errors. The single-post page now displays the full message and its formatted date, with controls for editing and deleting the post.
 
 ### Testing the single-post error response
 
@@ -154,7 +154,28 @@ After a successful deletion, the controller redirects to `/?deleted=1`. The home
 
 A missing post or invalid ObjectId returns a 404 page. Other deletion errors return status 500 and display a friendly message through `index.ejs`.
 
-The Edit post link targets `/edit/:id`; its route and handler are still to be implemented. CSS Grid places the actions side by side on the right. Edit and Post a message share a blue background, while Delete uses red.
+The Edit post link opens `/edit/:id`, where `editPostHandler` retrieves the post and renders the edit form. CSS Grid places the actions side by side on the right. Edit and Post a message share a blue background, while Delete uses red.
+
+### Editing posts
+
+I completed the edit functionality by reusing the structure of the single-post view. The Edit post link in `show.ejs` opens `/edit/:id`, where the GET route calls `editPostHandler`.
+
+The controller retrieves the post using `Post.findById()` and renders `edit.ejs` with the original creation date and content. The content appears in a prefilled textarea; the other post fields are not editable.
+
+The edit form submits a POST request to `/edit/:id`. The router calls `updatePostHandler`, which updates `post.content` and saves the document using `post.save()`. Mongoose automatically updates `updatedAt` through the schema's `{ timestamps: true }` option.
+
+After saving, the controller redirects to `/`, where the updated post appears on the Timeline.
+
+### Testing the CRUD functionality
+
+I manually tested the main CRUD operations in the browser:
+
+- **Create:** New posts are saved to MongoDB and appear on the homepage. The browser prevents submitting fewer than 25 characters.
+- **Read:** Posts appear on the homepage with formatted dates, and the See more link opens the full message.
+- **Update:** Editing a post saves the changed content. The changes remain visible after refreshing the page. The edit form also rejects content shorter than 25 characters.
+- **Delete:** Deleting a post removes it from the Timeline and displays a success message.
+
+The application now supports all four CRUD operations using Node.js, Express, MongoDB and EJS.
 
 ### Simplifying the templates
 
@@ -175,7 +196,7 @@ Each assignment builds on the previous one. Each completed stage will remain on 
 | `api` | Assignment 4 — API |
 | `authentication` | Assignment 5 — Authentication |
 
-Assignment 1 is preserved on `json`. The `database` branch started from the same completed stage. When Assignment 2 is complete and checked, I’ll merge it into `main` and keep its branch as a snapshot. Later assignment branches will start from the updated `main`.
+Assignment 1 is preserved on `json`. The `database` branch started from the same completed stage. Assignment 2 is now implemented and manually tested. I’ll merge it into `main` and keep its branch as a snapshot. Later assignment branches will start from the updated `main`.
 
 Each stage should run when checked out with its required dependencies and configuration. Git preserves committed code and documentation; it does not preserve live MongoDB data.
 
@@ -192,7 +213,7 @@ In my separate Node.js Crash Course repository, `lesson-1` through `lesson-9` ha
 | Assignment | Focus | Status |
 | --- | --- | --- |
 | 1 | JSON: display sample posts with Express and EJS | Implemented; preserved on `json` |
-| 2 | MongoDB CRUD | Create, read and delete implemented; update planned. |
+| 2 | MongoDB CRUD | Implemented; all four CRUD operations manually tested |
 | 3 | Comments on posts | Planned |
 | 4 | API endpoints for Timeline data | Planned |
 | 5 | Authentication and access control | Planned |

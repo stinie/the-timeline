@@ -21,10 +21,10 @@
             <%= post.content %>
           </p>
           <div class="post-actions">
-          <%# Submit a request to delete this post. %>
-          <form action="/delete/<%= post._id %>" method="POST">
-            <button type="submit">Delete</button>
-          </form>
+            <%# Submit a request to delete this post. %>
+            <form action="/delete/<%= post._id %>" method="POST">
+              <button type="submit" class="delete-post-button">Delete</button>
+            </form>
 
             <%# Open the edit form for this post. %>
             <a href="/edit/<%= post._id %>">Edit post</a>

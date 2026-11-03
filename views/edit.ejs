@@ -12,6 +12,19 @@
 
     <main>
       
+      <article class="post">
+      <p class="post-meta">
+        <%= post.formattedDate %>
+      </p>
+
+      <form action="/edit/<%= post._id %>" method="POST">
+        <textarea name="content" rows="10" cols="50" minlength="25" required><%= post.content %></textarea>
+
+        <div class="post-actions">
+          <button type="submit" class="edit-post-button">Submit</button>
+        </div>
+      </form>
+    </article>
 
     </main>
 

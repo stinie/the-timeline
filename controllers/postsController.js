@@ -146,9 +146,61 @@ const deletePostHandler = (req, res) => {
     });
 };
 
+// Retrieve one post and display its edit form.
+const editPostHandler = (req, res) => {
+  Post.findById(req.params.id)
+    .lean()
+    .then(post => {
+      if (!post) {
+        return res.status(404).render("404", {
+          title: "Post not found"
+        });
+      }
+
+      res.render("edit", {
+        title: "Edit Post",
+        post: {
+          ...post,
+          formattedDate: formatDate(post.createdAt)
+        }
+      });
+    })
+    .catch(err => {
+      console.error("Could not load edit form:", err);
+      res.status(err.name === "CastError" ? 404 : 500)
+        .send("Could not load the post.");
+    });
+};
+
+// Save the edited content and return to the post.
+const updatePostHandler = (req, res) => {
+  Post.findById(req.params.id)
+    .then(post => {
+      if (!post) {
+        return res.status(404).render("404", {
+          title: "Post not found"
+        });
+      }
+
+      post.content = req.body.content;
+
+      return post.save().then(() => {
+        res.redirect("/");
+      });
+    })
+    .catch(err => {
+      console.error("Could not update post:", err);
+      res.status(err.name === "CastError" ? 404 :
+        err.name === "ValidationError" ? 400 : 500)
+        .send("Could not update the post.");
+    });
+};
+
 module.exports = {
   postsHandler,
   createPostHandler,
   showPostHandler,
-  deletePostHandler
+  deletePostHandler,
+  editPostHandler,
+  updatePostHandler
 };

@@ -16,5 +16,11 @@ postsRouter.get("/show/:id", postsController.showPostHandler);
 // Send delete requests to the posts controller.
 postsRouter.post("/delete/:id", postsController.deletePostHandler);
 
+// Display the edit form for one post.
+postsRouter.get("/edit/:id", postsController.editPostHandler);
+
+// Save the edited post.
+postsRouter.post("/edit/:id", postsController.updatePostHandler);
+
 // Export the postsRouter so server.js can mount it in the Express app.
 module.exports = postsRouter;
