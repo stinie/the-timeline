@@ -2,6 +2,7 @@
 const express = require("express");
 const postsRouter = express.Router();
 const postsController = require("../controllers/postsController");
+const commentsController = require("../controllers/commentsController");
 
 
 /*
@@ -45,6 +46,9 @@ postsRouter.post("/posts/:id/delete", postsController.deletePostHandler);
 
 // Save the edited post.
 postsRouter.post("/posts/:id", postsController.updatePostHandler);
+
+// Create a comment belonging to a specific post.
+postsRouter.post("/posts/:id/comments", commentsController.createCommentHandler);
 
 // Export the postsRouter so server.js can mount it in the Express app.
 module.exports = postsRouter;

@@ -17,13 +17,9 @@
               Welcome to The Timeline! This is a simple message board.
             </p>
             <form action="/posts" method="POST" class="post-form">
-
-
               <label for="content">Post a message</label>
-              <textarea name="content" id="content" rows="5" minlength="25" required></textarea>
-
+              <textarea name="content" id="content" rows="3" minlength="25" required></textarea>
               <button type="submit">Post a message</button>
-
             </form>
           </article>
 
@@ -45,11 +41,11 @@
 
           <% posts.forEach(post=> { %>
           <article class="post">
-          <p class="post-meta">
+          <h2 class="post-meta">
             <%= post.userId ? `${post.userId.firstName} ${post.userId.lastName}` : "No Author" %>
              — 
             <%= post.formattedDate %> 
-          </p>
+          </h2>
 
           <p class="post-body">
             <%# Shorten long messages on the homepage; keep the full content in MongoDB. %>
@@ -57,8 +53,30 @@
               <%# Link to the full post using its MongoDB ID. %>
               <a href="/posts/<%= post._id %>">See more</a>
           </p>
-        </article>
-        <% }) %>
+
+          <section class="comments" aria-label="Comments">
+            <!-- Existing comments -->
+            <% post.comments.forEach(comment => { %>
+            <article class="comment">
+              <h3 class="comment-meta">
+                <%= comment.userId ? `${comment.userId.firstName} ${comment.userId.lastName}` : "No Author" %>
+                 — 
+                <%= comment.formattedDate %> 
+              </h3>
+              <p class="comment-body"><%= comment.content %></p>
+            </article>
+            <% }) %>
+
+            <!-- New comment form -->
+            <form action="/posts/<%= post._id %>/comments" method="POST" class="comment-form">
+              <label for="comment-<%= post._id %>">Post a comment</label>
+              <textarea name="content" id="comment-<%= post._id %>" rows="5" minlength="25" required></textarea>
+              <button type="submit">Post a comment</button>
+            </form>
+          </section><!-- End Comments -->
+
+          </article>
+          <% }) %>
 
         </main>
 

@@ -17,6 +17,7 @@ body {
 }
 
 h1,
+h2,
 .post-meta,
 footer {
   font-family: "Commit Mono", monospace;
@@ -97,6 +98,7 @@ footer {
 
 /* Give both controls matching dimensions and typography. */
 .post-actions button,
+.comment-form button,
 .post-actions a {
   display: inline-block;
   padding: 0.5rem 1rem;
@@ -109,14 +111,51 @@ footer {
   cursor: pointer;
 }
 
-.post-actions a,
+.comment-form {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.comment-form button {
+  justify-self: end;
+}
+
+.comments {
+  margin-top: 1rem;
+  margin-left: 1rem;
+  padding-left: 1rem;
+  border-left: 2px solid #ddd;
+}
+
+.comment {
+  margin-bottom: 1rem;
+}
+
+.comment-meta {
+  font-size: 0.9rem;
+}
+
+.comment-body {
+  margin-top: 0.25rem;
+}
+
+
+/* Blue buttons and links */
 .post-form button,
-.post-actions button.edit-post-button {
+.edit-post-button,
+.post-actions a {
   background: rgb(51 112 190);
   color: white;
 }
 
-.post-actions button.delete-post-button {
+/* Red delete button */
+.delete-post-button {
   background: rgb(207 43 39);
+  color: white;
+}
+
+/* Green comment button */
+.comment-form button {
+  background: rgb(40 150 70);
   color: white;
 }

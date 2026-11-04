@@ -4,6 +4,9 @@ const Post = require("../models/post");
 // Import the User model to look up the default post author.
 const User = require("../models/user");
 
+// Import the Comment model to retrieve comments for posts.
+const Comment = require("../models/comment");
+
 // Format a post timestamp into a readable Timeline date.
 function formatDate(timestamp) {
   const date = new Date(timestamp);
@@ -32,9 +35,29 @@ const listPostsHandler = (req, res) => {
     .populate("userId")
     .lean()
     .then((posts) => {
+
+      // Retrieve comments, oldest first.
+      return Comment.find()
+        .sort({ createdAt: 1 })
+        .populate("userId")
+        .lean()
+        .then((comments) => {
+          return { posts, comments };
+        });
+
+    })
+    .then(({ posts, comments }) => {
       const formattedPosts = posts.map(post => ({
         ...post,
-        formattedDate: formatDate(post.createdAt)
+        formattedDate: formatDate(post.createdAt),
+        comments: comments
+          .filter(comment =>
+            comment.postId.toString() === post._id.toString()
+          )
+          .map(comment => ({
+            ...comment,
+            formattedDate: formatDate(comment.createdAt)
+          }))
       }));
 
       // Render the homepage with posts and a deletion success flag derived from the URL query.
