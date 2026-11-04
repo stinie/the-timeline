@@ -1,6 +1,8 @@
 // Import the Post model to retrieve posts from MongoDB.
 const Post = require("../models/post");
 
+// Import the User model to look up the default post author.
+const User = require("../models/user");
 
 // Format a post timestamp into a readable Timeline date.
 function formatDate(timestamp) {
@@ -23,10 +25,11 @@ function formatDate(timestamp) {
   return `${month} ${day}${suffix} ${year}`;
 }
 
-// Retrieve posts newest first, prepare readable dates, and render the homepage.
+// Homepage handler: Retrieve posts, format dates, and render the homepage.
 const postsHandler = (req, res) => {
   Post.find()
     .sort({ createdAt: -1 })
+    .populate("userId")
     .lean()
     .then((posts) => {
       const formattedPosts = posts.map(post => ({
@@ -55,15 +58,33 @@ const postsHandler = (req, res) => {
     });
 };
 
-// Save a new post with Christine as the default author, then return to the Timeline.
+// Save a new post using the User configured for development.
 const createPostHandler = (req, res) => {
-  const post = new Post({
-    username: "stinie",
-    authorName: "Christine Fürst",
-    content: req.body.content
-  });
+  const devUserId = process.env.DEV_USER_ID;
 
-  post.save()
+  // Require a valid ObjectId before querying MongoDB.
+  if (!devUserId || !/^[a-fA-F0-9]{24}$/.test(devUserId)) {
+    console.error("DEV_USER_ID is missing or invalid.");
+    return res.status(500).send(
+      "Your post could not be saved. Please try again later."
+    );
+  }
+
+  User.findById(devUserId)
+    .then((user) => {
+      if (!user) {
+        throw new Error("The User configured by DEV_USER_ID was not found.");
+      }
+
+      const post = new Post({
+        content: req.body.content,
+        userId: user._id,
+        username: user.username,
+        authorName: `${user.firstName} ${user.lastName}`
+      });
+
+      return post.save();
+    })
     .then(() => {
       res.redirect("/");
     })
