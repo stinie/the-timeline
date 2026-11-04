@@ -46,7 +46,9 @@
           <% posts.forEach(post=> { %>
           <article class="post">
           <p class="post-meta">
-            <%= post.authorName %> — <%= post.formattedDate %>
+            <%= post.userId ? `${post.userId.firstName} ${post.userId.lastName}` : "No Author" %>
+             — 
+            <%= post.formattedDate %> 
           </p>
 
           <p class="post-body">

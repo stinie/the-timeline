@@ -4,14 +4,14 @@ const express = require("express");
 // Load Morgan, the HTTP request-logging middleware.
 const morgan = require("morgan");
 
-// Import Mongoose to connect to MongoDB and work with schemas and models.
-const mongoose = require("mongoose");
-
 // Create the Express app that handles requests and responses.
 const app = express();
 
 // Load local environment variables from .env.
 process.loadEnvFile();
+
+// Load the database connection function from config/database.js.
+const connectDB = require("./config/database");
 
 // Load the posts router.
 const postsRouter = require("./routes/postsRouter");
@@ -36,10 +36,7 @@ app.use((req, res) => {
   res.status(404).render("404", { title: "Page not found" });
 });
 
-// Read the MongoDB connection URI from the environment.
-const dbURI = process.env.MONGODB_URI;
-
 // Connect to the-timeline, then start the server on port 3000.
-mongoose.connect(dbURI, { dbName: "the-timeline" })
-  .then((result) => app.listen(3000))
+connectDB()
+  .then(() => app.listen(3000))
   .catch((err) => console.log(err));
