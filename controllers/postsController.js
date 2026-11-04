@@ -36,7 +36,7 @@ const postsHandler = (req, res) => {
         ...post,
         formattedDate: formatDate(post.createdAt)
       }));
-      
+
       // Render the homepage with posts and a deletion success flag derived from the URL query.
       res.render("index", {
         posts: formattedPosts,
@@ -78,9 +78,7 @@ const createPostHandler = (req, res) => {
 
       const post = new Post({
         content: req.body.content,
-        userId: user._id,
-        username: user.username,
-        authorName: `${user.firstName} ${user.lastName}`
+        userId: user._id
       });
 
       return post.save();
