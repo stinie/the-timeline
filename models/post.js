@@ -6,16 +6,6 @@ const Schema = mongoose.Schema;
 
 // Define the fields and validation rules for Timeline posts.
 const postSchema = new Schema({
-  username: {
-    type: String,
-    required: true,
-    trim: true
-  },
-  authorName: {
-    type: String,
-    required: true,
-    trim: true
-  },
   content: {
     type: String,
     required: true,
@@ -24,7 +14,8 @@ const postSchema = new Schema({
   },
   userId: {
     type: Schema.Types.ObjectId,
-    ref: "User"
+    ref: "User",
+    required: true
   }
 }, { timestamps: true });
 
