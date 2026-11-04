@@ -16,7 +16,7 @@
             <p class="post-meta">
               Welcome to The Timeline! This is a simple message board.
             </p>
-            <form action="/" method="POST" class="post-form">
+            <form action="/posts" method="POST" class="post-form">
 
 
               <label for="content">Post a message</label>
@@ -55,7 +55,7 @@
             <%# Shorten long messages on the homepage; keep the full content in MongoDB. %>
               <%= post.content.length> 250 ? post.content.slice(0, 250) + "…" : post.content %>
               <%# Link to the full post using its MongoDB ID. %>
-              <a href="/show/<%= post._id %>">See more</a>
+              <a href="/posts/<%= post._id %>">See more</a>
           </p>
         </article>
         <% }) %>

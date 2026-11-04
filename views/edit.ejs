@@ -17,7 +17,7 @@
         <%= post.formattedDate %>
       </p>
 
-      <form action="/edit/<%= post._id %>" method="POST">
+      <form action="/posts/<%= post._id %>" method="POST">
         <textarea name="content" rows="10" cols="50" minlength="25" required><%= post.content %></textarea>
 
         <div class="post-actions">

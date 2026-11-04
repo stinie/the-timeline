@@ -26,7 +26,7 @@ function formatDate(timestamp) {
 }
 
 // Homepage handler: Retrieve posts, format dates, and render the homepage.
-const postsHandler = (req, res) => {
+const listPostsHandler = (req, res) => {
   Post.find()
     .sort({ createdAt: -1 })
     .populate("userId")
@@ -84,7 +84,7 @@ const createPostHandler = (req, res) => {
       return post.save();
     })
     .then(() => {
-      res.redirect("/");
+      res.redirect("/posts");
     })
     .catch((err) => {
       console.error("Could not create post:", err);
@@ -145,7 +145,7 @@ const deletePostHandler = (req, res) => {
         });
       }
       // Return to the homepage with a deletion success indicator.
-      res.redirect("/?deleted=1");
+      res.redirect("/posts?deleted=1");
     })
     .catch(err => {
       if (err.name === "CastError") {
@@ -216,7 +216,7 @@ const updatePostHandler = (req, res) => {
 };
 
 module.exports = {
-  postsHandler,
+  listPostsHandler,
   createPostHandler,
   showPostHandler,
   deletePostHandler,
