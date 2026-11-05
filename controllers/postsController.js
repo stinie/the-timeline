@@ -4,7 +4,7 @@ const Post = require("../models/post");
 // Import the User model to look up the default post author.
 const User = require("../models/user");
 
-// Format a post timestamp into a readable Timeline date.
+// Helper function to format a timestamp into a readable date string for the Timeline.
 function formatDate(timestamp) {
   const date = new Date(timestamp);
 
@@ -66,17 +66,15 @@ const listPostsHandler = (req, res, next) => {
     .catch(next);
 };
 
-
 // Save a new post using the User configured for development.
-const createPostHandler = (req, res) => {
+const createPostHandler = (req, res, next) => {
   const devUserId = process.env.DEV_USER_ID;
 
-  // Require a valid ObjectId before querying MongoDB.
+  // Only post creation needs DEV_USER_ID to identify the development author.
+  // Check it before querying MongoDB, and forward configuration errors
+  // to the centralized error handler instead of responding here.
   if (!devUserId || !/^[a-fA-F0-9]{24}$/.test(devUserId)) {
-    console.error("DEV_USER_ID is missing or invalid.");
-    return res.status(500).send(
-      "Your post could not be saved. Please try again later."
-    );
+    return next(new Error("DEV_USER_ID is missing or invalid."));
   }
 
   User.findById(devUserId)
@@ -96,21 +94,23 @@ const createPostHandler = (req, res) => {
       res.redirect("/posts");
     })
     .catch((err) => {
-      console.error("Could not create post:", err);
+      if (err.name === "ValidationError") {
+        return res.status(400).send(
+          "Please enter a message of at least 25 characters."
+        );
+      }
 
-      const status = err.name === "ValidationError" ? 400 : 500;
-      res.status(status).send(
-        status === 400
-          ? "Please enter a message of at least 25 characters."
-          : "Your post could not be saved. Please try again later."
-      );
+      next(err);
     });
 };
 
 // Retrieve one post by its URL ID and render the full message.
-const showPostHandler = (req, res) => {
+const showPostHandler = (req, res, next) => {
   Post.findById(req.params.id)
     .lean()
+    // .then(() => {
+    //   throw new Error("TEST: centralized error handling");
+    // })
     .then((post) => {
       if (!post) {
         return res.status(404).render("404", {
@@ -133,19 +133,12 @@ const showPostHandler = (req, res) => {
         });
       }
 
-      console.error("Could not retrieve post:", err);
-      // Display the retrieval error within the shared Timeline layout.
-      res.status(500).render("index", {
-        posts: [],
-        title: "Post unavailable",
-        postsError: "This post is temporarily unavailable. Please try again later.",
-        deleted: false
-      });
+      next(err);
     });
 };
 
 // Delete a post by its ID, then return to the homepage.
-const deletePostHandler = (req, res) => {
+const deletePostHandler = (req, res, next) => {
   Post.findByIdAndDelete(req.params.id)
     .then(post => {
       if (!post) {
@@ -153,29 +146,23 @@ const deletePostHandler = (req, res) => {
           title: "Post not found"
         });
       }
-      // Return to the homepage with a deletion success indicator.
+      // Redirect after deletion to avoid resubmitting the POST on refresh.
+      // The query parameter ?deleted=1 tells the homepage to show a success message.
       res.redirect("/posts?deleted=1");
     })
-    .catch(err => {
+    .catch((err) => {
       if (err.name === "CastError") {
         return res.status(404).render("404", {
           title: "Post not found"
         });
       }
 
-      console.error("Could not delete post:", err);
-
-      res.status(500).render("index", {
-        posts: [],
-        title: "Delete unsuccessful",
-        postsError: "This post could not be deleted. Please try again later.",
-        deleted: false
-      });
+      next(err);
     });
 };
 
 // Retrieve one post and display its edit form.
-const editPostHandler = (req, res) => {
+const editPostHandler = (req, res, next) => {
   Post.findById(req.params.id)
     .lean()
     .then(post => {
@@ -193,15 +180,19 @@ const editPostHandler = (req, res) => {
         }
       });
     })
-    .catch(err => {
-      console.error("Could not load edit form:", err);
-      res.status(err.name === "CastError" ? 404 : 500)
-        .send("Could not load the post.");
+    .catch((err) => {
+      if (err.name === "CastError") {
+        return res.status(404).render("404", {
+          title: "Post not found"
+        });
+      }
+
+      next(err);
     });
 };
 
 // Save the edited content and return to the post.
-const updatePostHandler = (req, res) => {
+const updatePostHandler = (req, res, next) => {
   Post.findById(req.params.id)
     .then(post => {
       if (!post) {
@@ -217,10 +208,17 @@ const updatePostHandler = (req, res) => {
       });
     })
     .catch(err => {
-      console.error("Could not update post:", err);
-      res.status(err.name === "CastError" ? 404 :
-        err.name === "ValidationError" ? 400 : 500)
-        .send("Could not update the post.");
+      if (err.name === "CastError") {
+        return res.status(404).render("404", {
+          title: "Post not found"
+        });
+      }
+
+      if (err.name === "ValidationError") {
+        return res.status(400).send("Could not update the post.");
+      }
+
+      next(err);
     });
 };
 

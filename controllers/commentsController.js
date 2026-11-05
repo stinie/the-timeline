@@ -4,22 +4,23 @@ const Post = require("../models/post");
 // Import the Comment model to create and save comments.
 const Comment = require("../models/comment");
 
-const createCommentHandler = (req, res) => {
+// Handler for creating a new comment on a post.
+const createCommentHandler = (req, res, next) => {
   const devUserId = process.env.DEV_USER_ID;
   const postId = req.params.id;
-  const { content } = req.body;
+  const { content } = req.body || {};
 
-  // Require a valid post ObjectId before querying MongoDB.
-  if (!/^[a-fA-F0-9]{24}$/.test(postId)) {
-    return res.status(400).send("Invalid post ID.");
+  // DEV_USER_ID identifies the development author.
+  // Forward configuration errors to the centralized error handler.
+  if (!devUserId || !/^[a-fA-F0-9]{24}$/.test(devUserId)) {
+    return next(new Error("DEV_USER_ID is missing or invalid."));
   }
 
-  // Require a valid ObjectId before querying MongoDB.
-  if (!devUserId || !/^[a-fA-F0-9]{24}$/.test(devUserId)) {
-    console.error("DEV_USER_ID is missing or invalid.");
-    return res.status(500).send(
-      "Your comment could not be saved. Please try again later."
-    );
+  // Invalid post ID: show the existing 404 page.
+  if (!/^[a-fA-F0-9]{24}$/.test(postId)) {
+    return res.status(404).render("404", {
+      title: "Post not found"
+    });
   }
 
   // Require at least 25 characters for a comment.
@@ -53,16 +54,13 @@ const createCommentHandler = (req, res) => {
       res.redirect("/posts");
     })
     .catch((err) => {
-      console.error("Could not create comment:", err);
+      if (err.name === "ValidationError") {
+        return res.status(400).send(
+          "Please enter a comment of at least 25 characters."
+        );
+      }
 
-      if (res.headersSent) return;
-
-      const status = err.name === "ValidationError" ? 400 : 500;
-      res.status(status).send(
-        status === 400
-          ? "Please enter a comment of at least 25 characters."
-          : "Your comment could not be saved. Please try again later."
-      );
+      next(err);
     });
 };
 
