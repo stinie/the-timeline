@@ -9,7 +9,8 @@ const commentSchema = Schema({
     type: String,
     required: true,
     trim: true,
-    minlength: 25
+    minlength: 25,
+    maxlength: 1000
   },
   userId: {
     type: Schema.Types.ObjectId,
