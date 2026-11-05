@@ -17,9 +17,11 @@
         <%= post.formattedDate %>
       </p>
 
-      <form action="/posts/<%= post._id %>" method="POST">
-        <textarea name="content" rows="10" cols="50" minlength="25" required><%= post.content %></textarea>
-
+      <form action="/posts/<%= post._id %>" method="POST" class="post-form" aria-label="Edit post">
+        <textarea name="content" rows="10" cols="50" minlength="25" required><%= typeof submittedContent !== "undefined" ? submittedContent : post.content %></textarea>
+        <% if (typeof validationError !== "undefined" && validationError) { %>
+          <p class="error" role="alert"><%= validationError %></p>
+        <% } %>
         <div class="post-actions">
           <button type="submit" class="edit-post-button">Submit</button>
         </div>

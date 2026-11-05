@@ -5,6 +5,7 @@ const postsController = require("../controllers/postsController");
 const commentsController = require("../controllers/commentsController");
 const validate = require("../middleware/validate");
 const { createPostRules } = require("../validators/post");
+const { createCommentRules } = require("../validators/comment");
 
 /*
 THE TIMELINE — POST ROUTES
@@ -34,8 +35,18 @@ postsRouter.get("/", (req, res) => {
 postsRouter.get("/posts", postsController.listPostsHandler);
 
 // Create a new post from the Timeline form.
-// postsRouter.post("/posts", postsController.createPostHandler);
-postsRouter.post("/posts", createPostRules, validate, postsController.createPostHandler);
+postsRouter.post(
+  "/posts",
+  createPostRules,
+  validate((req, res, next, message) => {
+    res.locals.validationError = message;
+    res.locals.submittedContent = req.body.content || "";
+
+    res.status(422);
+    return postsController.listPostsHandler(req, res, next);
+  }),
+  postsController.createPostHandler
+);
 
 // Display one post using the ID supplied in the URL.
 postsRouter.get("/posts/:id", postsController.showPostHandler);
@@ -47,10 +58,33 @@ postsRouter.get("/posts/:id/edit", postsController.editPostHandler);
 postsRouter.post("/posts/:id/delete", postsController.deletePostHandler);
 
 // Save the edited post.
-postsRouter.post("/posts/:id", postsController.updatePostHandler);
+// postsRouter.post("/posts/:id", postsController.updatePostHandler);
+postsRouter.post(
+  "/posts/:id",
+  createPostRules,
+  validate((req, res, next, message) => {
+    res.locals.validationError = message;
+    res.locals.submittedContent = req.body.content ?? "";
+    res.status(422);
+    return postsController.editPostHandler(req, res, next);
+  }),
+  postsController.updatePostHandler
+);
 
 // Create a comment belonging to a specific post.
-postsRouter.post("/posts/:id/comments", commentsController.createCommentHandler);
+postsRouter.post(
+  "/posts/:id/comments",
+  createCommentRules,
+  validate((req, res, next, message) => {
+    res.locals.commentValidationError = message;
+    res.locals.commentPostId = req.params.id;
+    res.locals.submittedComment = req.body.content || "";
+
+    res.status(422);
+    return postsController.listPostsHandler(req, res, next);
+  }),
+  commentsController.createCommentHandler
+);
 
 // Export the postsRouter so server.js can mount it in the Express app.
 module.exports = postsRouter;

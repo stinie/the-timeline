@@ -7,4 +7,5 @@ const createPostRules = [
     .withMessage("Post must contain at least 25 characters")
 ];
 
+
 module.exports = { createPostRules };
