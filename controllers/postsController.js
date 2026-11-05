@@ -26,7 +26,7 @@ function formatDate(timestamp) {
 }
 
 // Homepage handler: Retrieve posts, format dates, and render the homepage.
-const listPostsHandler = (req, res) => {
+const listPostsHandler = (req, res, next) => {
   Post.find()
     .sort({ createdAt: -1 })
     .populate("userId")
@@ -36,6 +36,15 @@ const listPostsHandler = (req, res) => {
       populate: { path: "userId" }
     })
     .lean()
+    // LEARNING TEST: Centralized error handling
+    // Uncomment this block after .lean() to simulate a rejected promise.
+    // The error skips the next .then() and reaches .catch(next),
+    // which forwards it to middleware/errorHandler.js.
+    // Comment it out again to restore normal operation.
+
+    // .then(() => {
+    //   throw new Error("TEST: centralized error handling");
+    // })
     .then((posts) => {
       const formattedPosts = posts.map(post => ({
         ...post,
@@ -54,16 +63,7 @@ const listPostsHandler = (req, res) => {
         deleted: req.query.deleted === "1"
       });
     })
-    .catch((err) => {
-      console.error("Could not retrieve posts:", err);
-
-      res.status(500).render("index", {
-        posts: [],
-        title: "Home",
-        postsError: "Posts are temporarily unavailable. Please try again later.",
-        deleted: false
-      });
-    });
+    .catch(next);
 };
 
 

@@ -16,6 +16,9 @@ const connectDB = require("./config/database");
 // Load the posts router.
 const postsRouter = require("./routes/postsRouter");
 
+// Load the error handler middleware.
+const errorHandler = require("./middleware/errorHandler");
+
 // Configure EJS as the template engine for rendering views.
 app.set("view engine", "ejs");
 
@@ -35,6 +38,9 @@ app.use(express.static("public"));
 app.use((req, res) => {
   res.status(404).render("404", { title: "Page not found" });
 });
+
+// Handle errors forwarded from routes and middleware.
+app.use(errorHandler);
 
 // Connect to the-timeline, then start the server on port 3000.
 connectDB()

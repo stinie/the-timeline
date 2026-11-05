@@ -16,9 +16,20 @@
             <p class="post-meta">
               Welcome to The Timeline! This is a simple message board.
             </p>
-            <form action="/posts" method="POST" class="post-form">
+            <!--
+              TESTING SERVER-SIDE VALIDATION
+              Temporarily add "novalidate" to this form to bypass the browser's
+              built-in HTML validation and test Express-validator on the server.
+              Remove "novalidate" afterwards to restore browser-side validation.
+            -->
+            <form action="/posts" method="POST" class="post-form" aria-label="Post a message">
               <label for="content">Post a message</label>
-              <textarea name="content" id="content" rows="3" minlength="25" required></textarea>
+              <textarea name="content" id="content" rows="3" minlength="25" required><%= typeof submittedContent !== "undefined" ? submittedContent : "" %></textarea>
+              <% if (typeof validationError !== "undefined" && validationError) { %>
+                <p class="error" role="alert">
+                  <%= validationError %>
+                </p>
+              <% } %>
               <button type="submit">Post a message</button>
             </form>
           </article>
@@ -68,7 +79,7 @@
             <% }) %>
 
             <!-- New comment form -->
-            <form action="/posts/<%= post._id %>/comments" method="POST" class="comment-form">
+            <form action="/posts/<%= post._id %>/comments" method="POST" class="comment-form" aria-label="Post a comment">
               <label for="comment-<%= post._id %>">Post a comment</label>
               <textarea name="content" id="comment-<%= post._id %>" rows="5" minlength="25" required></textarea>
               <button type="submit">Post a comment</button>

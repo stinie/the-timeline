@@ -3,7 +3,8 @@ const express = require("express");
 const postsRouter = express.Router();
 const postsController = require("../controllers/postsController");
 const commentsController = require("../controllers/commentsController");
-
+const validate = require("../middleware/validate");
+const { createPostRules } = require("../validators/post");
 
 /*
 THE TIMELINE — POST ROUTES
@@ -33,7 +34,8 @@ postsRouter.get("/", (req, res) => {
 postsRouter.get("/posts", postsController.listPostsHandler);
 
 // Create a new post from the Timeline form.
-postsRouter.post("/posts", postsController.createPostHandler);
+// postsRouter.post("/posts", postsController.createPostHandler);
+postsRouter.post("/posts", createPostRules, validate, postsController.createPostHandler);
 
 // Display one post using the ID supplied in the URL.
 postsRouter.get("/posts/:id", postsController.showPostHandler);
