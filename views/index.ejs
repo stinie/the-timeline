@@ -13,7 +13,7 @@
         <main>
 
           <article class="post">
-            <p class="post-meta">
+            <p class="intro">
               Welcome to The Timeline! This is a simple message board.
             </p>
             <!--
@@ -24,7 +24,7 @@
             -->
             <form action="/posts" method="POST" class="post-form" aria-label="Post a message">
               <label for="content">Post a message</label>
-              <textarea name="content" id="content" rows="3" minlength="25" required><%= typeof submittedContent !== "undefined" ? submittedContent : "" %></textarea>
+              <textarea name="content" id="content" rows="3" minlength="25" placeholder="What's on your mind?" required><%= typeof submittedContent !== "undefined" ? submittedContent : "" %></textarea>
               <% if (typeof validationError !== "undefined" && validationError) { %>
                 <p class="error" role="alert">
                   <%= validationError %>
