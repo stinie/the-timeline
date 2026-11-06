@@ -93,15 +93,7 @@ const createPostHandler = (req, res, next) => {
     .then(() => {
       res.redirect("/posts");
     })
-    .catch((err) => {
-      if (err.name === "ValidationError") {
-        return res.status(400).send(
-          "Please enter a message of at least 25 characters."
-        );
-      }
-
-      next(err);
-    });
+    .catch(next);
 };
 
 // Retrieve one post by its URL ID and render the full message.
@@ -113,9 +105,9 @@ const showPostHandler = (req, res, next) => {
     // })
     .then((post) => {
       if (!post) {
-        return res.status(404).render("404", {
-          title: "Post not found"
-        });
+        const error = new Error("Post not found");
+        error.status = 404;
+        return next(error);
       }
 
       res.render("show", {
@@ -128,9 +120,8 @@ const showPostHandler = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === "CastError") {
-        return res.status(404).render("404", {
-          title: "Post not found"
-        });
+        err.status = 404;
+        return next(err);
       }
 
       next(err);
@@ -142,9 +133,9 @@ const deletePostHandler = (req, res, next) => {
   Post.findByIdAndDelete(req.params.id)
     .then(post => {
       if (!post) {
-        return res.status(404).render("404", {
-          title: "Post not found"
-        });
+        const error = new Error("Post not found");
+        error.status = 404;
+        return next(error);
       }
       // Redirect after deletion to avoid resubmitting the POST on refresh.
       // The query parameter ?deleted=1 tells the homepage to show a success message.
@@ -152,9 +143,8 @@ const deletePostHandler = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === "CastError") {
-        return res.status(404).render("404", {
-          title: "Post not found"
-        });
+        err.status = 404;
+        return next(err);
       }
 
       next(err);
@@ -167,9 +157,9 @@ const editPostHandler = (req, res, next) => {
     .lean()
     .then(post => {
       if (!post) {
-        return res.status(404).render("404", {
-          title: "Post not found"
-        });
+        const error = new Error("Post not found");
+        error.status = 404;
+        return next(error);
       }
 
       res.render("edit", {
@@ -182,9 +172,8 @@ const editPostHandler = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === "CastError") {
-        return res.status(404).render("404", {
-          title: "Post not found"
-        });
+        err.status = 404;
+        return next(err);
       }
 
       next(err);
@@ -196,9 +185,9 @@ const updatePostHandler = (req, res, next) => {
   Post.findById(req.params.id)
     .then(post => {
       if (!post) {
-        return res.status(404).render("404", {
-          title: "Post not found"
-        });
+        const error = new Error("Post not found");
+        error.status = 404;
+        return next(error);
       }
 
       post.content = req.body.content;
@@ -206,16 +195,16 @@ const updatePostHandler = (req, res, next) => {
       return post.save().then(() => {
         res.redirect("/");
       });
+
+      // TEST: Temporarily replace post.save() with this line to simulate a saving error.
+      // Restore post.save() after testing.
+      // return Promise.reject(new Error("TEST: saving failed"));
+
     })
     .catch(err => {
       if (err.name === "CastError") {
-        return res.status(404).render("404", {
-          title: "Post not found"
-        });
-      }
-
-      if (err.name === "ValidationError") {
-        return res.status(400).send("Could not update the post.");
+        err.status = 404;
+        return next(err);
       }
 
       next(err);
