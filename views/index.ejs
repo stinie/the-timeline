@@ -43,12 +43,12 @@
           </article>
           <% } %>
 
-          <% if (deleted) { %>
-          <article class="post success">
-            <p role="status">
-              Post deleted successfully.
-            </p>
-          </article>
+          <% if (successMessage) { %>
+            <article class="post success">
+              <p role="status">
+                <%= successMessage %>
+              </p>
+            </article>
           <% } %>
 
           <% posts.forEach(post=> { %>

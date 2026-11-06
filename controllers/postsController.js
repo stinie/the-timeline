@@ -4,6 +4,14 @@ const Post = require("../models/post");
 // Import the User model to look up the default post author.
 const User = require("../models/user");
 
+// Define success messages in one place for posts and comments.
+const successMessages = {
+  created: "Post created successfully.",
+  updated: "Post updated successfully.",
+  deleted: "Post deleted successfully.",
+  commented: "Comment added successfully."
+};
+
 // Helper function to format a timestamp into a readable date string for the Timeline.
 function formatDate(timestamp) {
   const date = new Date(timestamp);
@@ -60,7 +68,7 @@ const listPostsHandler = (req, res, next) => {
         posts: formattedPosts,
         title: "Home",
         postsError: null,
-        deleted: req.query.deleted === "1"
+        successMessage: successMessages[req.query.success] || null
       });
     })
     .catch(next);
@@ -91,7 +99,7 @@ const createPostHandler = (req, res, next) => {
       return post.save();
     })
     .then(() => {
-      res.redirect("/posts");
+      res.redirect("/posts?success=created");
     })
     .catch(next);
 };
@@ -139,7 +147,7 @@ const deletePostHandler = (req, res, next) => {
       }
       // Redirect after deletion to avoid resubmitting the POST on refresh.
       // The query parameter ?deleted=1 tells the homepage to show a success message.
-      res.redirect("/posts?deleted=1");
+      res.redirect("/posts?success=deleted");
     })
     .catch((err) => {
       if (err.name === "CastError") {
@@ -193,7 +201,7 @@ const updatePostHandler = (req, res, next) => {
       post.content = req.body.content;
 
       return post.save().then(() => {
-        res.redirect("/");
+        res.redirect("/posts?success=updated");
       });
 
       // TEST: Temporarily replace post.save() with this line to simulate a saving error.

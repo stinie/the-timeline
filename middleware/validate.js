@@ -2,7 +2,6 @@
 // Otherwise, pass the error message to the route's error handler.
 
 const { validationResult } = require("express-validator");
-const { listPostsHandler } = require("../controllers/postsController");
 
 const validate = (onValidationError) => (req, res, next) => {
   const errors = validationResult(req);

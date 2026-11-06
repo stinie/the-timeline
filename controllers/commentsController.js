@@ -50,7 +50,7 @@ const createCommentHandler = (req, res, next) => {
     .then((savedComment) => {
       if (!savedComment) return;
       // Redirect to the Timeline after successfully adding a comment.
-      res.redirect("/posts");
+      res.redirect("/posts?success=commented");
     })
     .catch(next);
 };
