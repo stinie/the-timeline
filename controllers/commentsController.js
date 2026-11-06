@@ -4,9 +4,15 @@ const Post = require("../models/post");
 // Import the Comment model to create and save comments.
 const Comment = require("../models/comment");
 
+// Import the User model to verify that the comment author exists.
+const User = require("../models/user");
+
 // Handler for creating a new comment on a post.
 const createCommentHandler = (req, res, next) => {
   const devUserId = process.env.DEV_USER_ID;
+  // TEST ONLY: Simulate an author who does not exist in MongoDB.
+  // Restore the original DEV_USER_ID line after testing.
+  // const devUserId = "000000000000000000000000";
   const postId = req.params.id;
   const { content } = req.body || {};
 
@@ -23,8 +29,15 @@ const createCommentHandler = (req, res, next) => {
     return next(error);
   }
 
-  // Find the post by ID to ensure it exists before adding a comment.
-  Post.findById(postId)
+  // Verify that the development author exists before finding the post.
+  User.findById(devUserId)
+    .then(user => {
+      if (!user) {
+        throw new Error("DEV_USER_ID does not reference an existing user.");
+      }
+      // Find the post by ID to ensure it exists before adding a comment.
+      return Post.findById(postId);
+    })
     .then((post) => {
       if (!post) {
         const error = new Error("Post not found");

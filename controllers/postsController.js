@@ -80,6 +80,9 @@ const listPostsHandler = (req, res, next) => {
 // Save a new post using the User configured for development.
 const createPostHandler = (req, res, next) => {
   const devUserId = process.env.DEV_USER_ID;
+  // TEST ONLY: Simulate an author who does not exist in MongoDB.
+  // Restore the original DEV_USER_ID line after testing.
+  // const devUserId = "000000000000000000000000";
 
   // Only post creation needs DEV_USER_ID to identify the development author.
   // Check it before querying MongoDB, and forward configuration errors
