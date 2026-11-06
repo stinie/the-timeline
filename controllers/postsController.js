@@ -4,6 +4,9 @@ const Post = require("../models/post");
 // Import the User model to look up the default post author.
 const User = require("../models/user");
 
+// Import the Comment model to delete comments belonging to a post.
+const Comment = require("../models/comment");
+
 // Define success messages in one place for posts and comments.
 const successMessages = {
   created: "Post created successfully.",
@@ -136,20 +139,24 @@ const showPostHandler = (req, res, next) => {
     });
 };
 
-// Delete a post by its ID, then return to the homepage.
+// Delete a post's comments first, then delete the post.
 const deletePostHandler = (req, res, next) => {
-  Post.findByIdAndDelete(req.params.id)
+  Post.findById(req.params.id)
     .then(post => {
       if (!post) {
         const error = new Error("Post not found");
         error.status = 404;
         return next(error);
       }
-      // Redirect after deletion to avoid resubmitting the POST on refresh.
-      // The query parameter ?deleted=1 tells the homepage to show a success message.
-      res.redirect("/posts?success=deleted");
+
+      return Comment.deleteMany({ postId: post._id })
+        .then(() => Post.findByIdAndDelete(post._id))
+        .then(() => {
+          // Redirect only after both deletion operations succeed.
+          res.redirect("/posts?success=deleted");
+        });
     })
-    .catch((err) => {
+    .catch(err => {
       if (err.name === "CastError") {
         err.status = 404;
         return next(err);
