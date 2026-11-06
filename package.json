@@ -1,7 +1,7 @@
 {
   "name": "the-timeline",
   "version": "1.0.0",
-  "description": "Assignment 1 - The timeline",
+  "description": "The Timeline",
   "homepage": "https://github.com/stinie/the-timeline#readme",
   "bugs": {
     "url": "https://github.com/stinie/the-timeline/issues"
@@ -12,7 +12,7 @@
   },
   "author": "Christine Fürst",
   "type": "commonjs",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js" 

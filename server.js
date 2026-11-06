@@ -1,3 +1,6 @@
+// Load local environment variables from .env.
+process.loadEnvFile();
+
 // Load Express so this file can create and configure the web server.
 const express = require("express");
 
@@ -7,8 +10,8 @@ const morgan = require("morgan");
 // Create the Express app that handles requests and responses.
 const app = express();
 
-// Load local environment variables from .env.
-process.loadEnvFile();
+// Use the environment port, or default to 3000 if not set.
+const PORT = process.env.PORT || 3000;
 
 // Load the database connection function from config/database.js.
 const connectDB = require("./config/database");
@@ -44,5 +47,5 @@ app.use(errorHandler);
 
 // Connect to the-timeline, then start the server on port 3000.
 connectDB()
-  .then(() => app.listen(3000))
+  .then(() => app.listen(PORT))
   .catch((err) => console.log(err));
