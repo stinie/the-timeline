@@ -24,6 +24,7 @@
             -->
             <form action="/posts" method="POST" class="post-form" aria-label="Post a message">
               <label for="content">Post a message</label>
+              <%# Testing: Temporarily remove minlength="25" to test server-side validation. Restore it afterwards. %>
               <textarea name="content" id="content" rows="3" minlength="25" placeholder="What's on your mind?" required><%= typeof submittedContent !== "undefined" ? submittedContent : "" %></textarea>
               <% if (typeof validationError !== "undefined" && validationError) { %>
                 <p class="error" role="alert">
@@ -81,6 +82,7 @@
             <!-- New comment form -->
             <form action="/posts/<%= post._id %>/comments" method="POST" class="comment-form" aria-label="Post a comment">
               <label for="comment-<%= post._id %>">Post a comment</label>
+              <%# Testing: Temporarily remove minlength="25" to test server-side validation. Restore it afterwards. %>
               <textarea name="content" id="comment-<%= post._id %>" rows="5" minlength="25" required><%= typeof submittedComment !== "undefined" && commentPostId === String(post._id) ? submittedComment : "" %></textarea>
               <% if (typeof commentValidationError !== "undefined" && commentValidationError && commentPostId === String(post._id)) { %>
                 <p class="error" role="alert"><%= commentValidationError %></p>

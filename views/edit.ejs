@@ -18,6 +18,7 @@
       </p>
 
       <form action="/posts/<%= post._id %>" method="POST" class="post-form" aria-label="Edit post">
+        <%# Testing: Temporarily remove minlength="25" to test server-side validation. Restore it afterwards. %>
         <textarea name="content" rows="10" cols="50" minlength="25" required><%= typeof submittedContent !== "undefined" ? submittedContent : post.content %></textarea>
         <% if (typeof validationError !== "undefined" && validationError) { %>
           <p class="error" role="alert"><%= validationError %></p>

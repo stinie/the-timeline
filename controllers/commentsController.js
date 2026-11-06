@@ -23,13 +23,6 @@ const createCommentHandler = (req, res, next) => {
     });
   }
 
-  // Require at least 25 characters for a comment.
-  if (typeof content !== "string" || content.trim().length < 25) {
-    return res.status(400).send(
-      "Comment must contain at least 25 characters."
-    );
-  }
-
   // Find the post by ID to ensure it exists before adding a comment.
   Post.findById(postId)
     .then((post) => {

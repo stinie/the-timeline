@@ -1,3 +1,6 @@
+// Validate comment length here before the controller runs.
+// No need to repeat this check in commentsController.js.
+
 const { body } = require("express-validator");
 
 const createCommentRules = [
