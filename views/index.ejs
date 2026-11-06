@@ -81,7 +81,7 @@
             <!-- New comment form -->
             <form action="/posts/<%= post._id %>/comments" method="POST" class="comment-form" aria-label="Post a comment">
               <label for="comment-<%= post._id %>">Post a comment</label>
-              <textarea name="content" id="comment-<%= post._id %>" rows="5" minlength="25" required></textarea>
+              <textarea name="content" id="comment-<%= post._id %>" rows="5" minlength="25" required><%= typeof submittedComment !== "undefined" && commentPostId === String(post._id) ? submittedComment : "" %></textarea>
               <% if (typeof commentValidationError !== "undefined" && commentValidationError && commentPostId === String(post._id)) { %>
                 <p class="error" role="alert"><%= commentValidationError %></p>
               <% } %>

@@ -58,7 +58,6 @@ postsRouter.get("/posts/:id/edit", postsController.editPostHandler);
 postsRouter.post("/posts/:id/delete", postsController.deletePostHandler);
 
 // Save the edited post.
-// postsRouter.post("/posts/:id", postsController.updatePostHandler);
 postsRouter.post(
   "/posts/:id",
   createPostRules,
