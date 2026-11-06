@@ -40,7 +40,8 @@ postsRouter.post(
   createPostRules,
   validate((req, res, next, message) => {
     res.locals.validationError = message;
-    res.locals.submittedContent = req.body.content || "";
+    res.locals.submittedContent =
+      typeof req.body?.content === "string" ? req.body.content : "";
 
     res.status(422);
     return postsController.listPostsHandler(req, res, next);
@@ -63,21 +64,29 @@ postsRouter.post(
   createPostRules,
   validate((req, res, next, message) => {
     res.locals.validationError = message;
-    res.locals.submittedContent = req.body.content ?? "";
+    res.locals.submittedContent =
+      typeof req.body?.content === "string" ? req.body.content : "";
     res.status(422);
     return postsController.editPostHandler(req, res, next);
   }),
   postsController.updatePostHandler
 );
 
+
 // Create a comment belonging to a specific post.
+// KNOWN LIMITATION:
+// Comment content is validated before checking whether the post exists.
+// If both the post ID and comment content are invalid, the route returns
+// HTTP 422 (validation error) instead of HTTP 404 (post not found).
+// This is intentional for now; improving the check order is deferred.
 postsRouter.post(
   "/posts/:id/comments",
   createCommentRules,
   validate((req, res, next, message) => {
     res.locals.commentValidationError = message;
     res.locals.commentPostId = req.params.id;
-    res.locals.submittedComment = req.body.content || "";
+    res.locals.submittedContent =
+      typeof req.body?.content === "string" ? req.body.content : "";
 
     res.status(422);
     return postsController.listPostsHandler(req, res, next);
