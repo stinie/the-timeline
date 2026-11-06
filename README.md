@@ -56,6 +56,4 @@ Replaced JSON storage with MongoDB Atlas and Mongoose. Implemented and manually 
 
 ## Assignment 3 — Comments
 
-### Database connection refactoring
-
-Moved the MongoDB connection into `config/database.js`, separating database configuration from Express server startup. Verified that the application still works.
+Implemented User–Post–Comment relationships and server-side validation for all forms, requiring a minimum of 25 characters for posts and comments.
