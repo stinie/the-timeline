@@ -66,12 +66,16 @@ const listPostsHandler = (req, res, next) => {
         }))
       }));
 
-      // Render the homepage with posts and a deletion success flag derived from the URL query.
+      // Render the homepage with posts and a success message derived from the URL query.
       res.render("index", {
         posts: formattedPosts,
         title: "Home",
         postsError: null,
-        successMessage: successMessages[req.query.success] || null
+        successMessage:
+          typeof req.query.success === "string" &&
+            Object.hasOwn(successMessages, req.query.success)
+            ? successMessages[req.query.success]
+            : null
       });
     })
     .catch(next);
