@@ -34,11 +34,10 @@ apiRouter.put(
   postsController.updatePost
 );
 
-// PUT normally replaces a resource's editable representation, while PATCH
-// applies a partial update. In this learning project, our PUT endpoint
-// updates only the comment's content, so it behaves more like PATCH.
-// Both methods reuse the same controller because content is the only
-// editable field; the author and parent post remain unchanged.
+// PUT generally replaces a resource's editable representation, while PATCH
+// applies a partial update. In this project, PUT updates only post content,
+// so its behavior is similar to PATCH.
+// Both methods preserve the post's author and other unchanged fields.
 apiRouter.patch(
   "/posts/:id",
   (req, res, next) => {
@@ -167,5 +166,12 @@ apiRouter.patch(
 
 // Deletion needs only the comment ID, so no content validation is required.
 apiRouter.delete("/comments/:id", commentsController.deleteComment);
+
+// Return JSON when no API route matched the request.
+apiRouter.use((req, res) => {
+  res.status(404).json({
+    error: "API endpoint not found."
+  });
+});
 
 module.exports = apiRouter;
