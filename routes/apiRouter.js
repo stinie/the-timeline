@@ -92,4 +92,35 @@ apiRouter.post(
   commentsController.createComment
 );
 
+apiRouter.put(
+  "/comments/:id",
+  (req, res, next) => {
+    const body = req.body;
+
+    // Expect a JSON object rather than an array or another value.
+    if (!body || typeof body !== "object" || Array.isArray(body)) {
+      return res.status(422).json({
+        error: "Send a JSON object containing content."
+      });
+    }
+
+    // Reject protected and unknown fields, even alongside valid content.
+    const allowedFields = ["content"];
+
+    if (Object.keys(body).some((field) => !allowedFields.includes(field))) {
+      return res.status(422).json({
+        error: "Only content may be updated."
+      });
+    }
+
+    next();
+  },
+  // Reuse the string, trimming, and minimum-length checks.
+  createCommentRules,
+  validate((req, res, next, message) => {
+    return res.status(422).json({ error: message });
+  }),
+  commentsController.updateComment
+);
+
 module.exports = apiRouter;

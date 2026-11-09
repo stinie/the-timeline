@@ -86,4 +86,40 @@ const createComment = (req, res, next) => {
     .catch(next);
 };
 
-module.exports = { getPostComments, createComment };
+// Update a comment's content while preserving its author and parent post.
+const updateComment = (req, res, next) => {
+  const commentId = req.params.id;
+
+  // Reject malformed IDs before querying MongoDB.
+  if (!/^[a-fA-F0-9]{24}$/.test(commentId)) {
+    return res.status(400).json({
+      error: "Invalid comment ID."
+    });
+  }
+
+  Comment.findById(commentId)
+    .then((comment) => {
+      // A correctly formatted ID may still have no matching comment.
+      if (!comment) {
+        return res.status(404).json({
+          error: "Comment not found."
+        });
+      }
+
+      // Validation has already checked and trimmed the content.
+      // Assign only this field so the author and parent remain unchanged.
+      comment.content = req.body.content;
+
+      // Wait for MongoDB to save before confirming the update.
+      return comment.save().then((savedComment) => {
+        res.status(200).json({ comment: savedComment });
+      });
+    })
+    .catch(next);
+};
+
+module.exports = {
+  getPostComments,
+  createComment,
+  updateComment
+};
