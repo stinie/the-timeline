@@ -70,4 +70,7 @@ apiRouter.patch(
   postsController.patchPost
 );
 
+// DELETE needs only the URL ID, so no content validator is required.
+apiRouter.delete("/posts/:id", postsController.deletePost);
+
 module.exports = apiRouter;

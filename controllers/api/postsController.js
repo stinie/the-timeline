@@ -2,6 +2,8 @@
 const Post = require("../../models/post");
 // Look up the development author before creating a post.
 const User = require("../../models/user");
+// Comments are stored separately and must be removed explicitly.
+const Comment = require("../../models/comment");
 
 // Retrieve posts from MongoDB and return them as JSON.
 const getAllPosts = (req, res, next) => {
@@ -139,10 +141,47 @@ const patchPost = (req, res, next) => {
     .catch(next);
 };
 
+// Delete one post together with all comments belonging to it.
+const deletePost = (req, res, next) => {
+  const postId = req.params.id;
+
+  // Reject malformed IDs before querying MongoDB.
+  if (!/^[a-fA-F0-9]{24}$/.test(postId)) {
+    return res.status(400).json({
+      error: "Invalid post ID."
+    });
+  }
+
+  Post.findById(postId)
+    .then((post) => {
+      // Check existence before attempting either deletion.
+      if (!post) {
+        return res.status(404).json({
+          error: "Post not found."
+        });
+      }
+
+      // MongoDB does not automatically delete comments referencing a post.
+      // Match this post's ID so comments on other posts remain untouched.
+      return Comment.deleteMany({ postId: post._id })
+        .then(() => {
+          return Post.findByIdAndDelete(post._id);
+        })
+        .then(() => {
+          // Confirm success only after both database operations finish.
+          res.status(200).json({
+            message: "Post and associated comments deleted successfully."
+          });
+        });
+    })
+    .catch(next);
+};
+
 module.exports = {
   getAllPosts,
   getOnePost,
   createPost,
   updatePost,
-  patchPost
+  patchPost,
+  deletePost
 };
