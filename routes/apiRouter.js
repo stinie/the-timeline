@@ -4,6 +4,7 @@ const postsController = require("../controllers/api/postsController");
 const { createPostRules } = require("../validators/post");
 const validate = require("../middleware/validate");
 const commentsController = require("../controllers/api/commentsController");
+const { createCommentRules } = require("../validators/comment");
 
 // server.js adds the /api prefix, so this becomes GET /api/posts.
 apiRouter.get("/posts", postsController.getAllPosts);
@@ -78,6 +79,17 @@ apiRouter.delete("/posts/:id", postsController.deletePost);
 apiRouter.get(
   "/posts/:postId/comments",
   commentsController.getPostComments
+);
+
+apiRouter.post(
+  "/posts/:postId/comments",
+  // Reuse the same content rules as the existing website.
+  createCommentRules,
+  validate((req, res, next, message) => {
+    // Invalid content stops here without creating a comment.
+    return res.status(422).json({ error: message });
+  }),
+  commentsController.createComment
 );
 
 module.exports = apiRouter;

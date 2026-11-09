@@ -1,5 +1,6 @@
 const Post = require("../../models/post");
 const Comment = require("../../models/comment");
+const User = require("../../models/user");
 
 // Return all comments belonging to one existing post.
 const getPostComments = (req, res, next) => {
@@ -33,4 +34,56 @@ const getPostComments = (req, res, next) => {
     .catch(next);
 };
 
-module.exports = { getPostComments };
+// Create a comment linked to an existing post and development author.
+const createComment = (req, res, next) => {
+  const postId = req.params.postId;
+  const devUserId = process.env.DEV_USER_ID;
+
+  // Reject malformed post IDs before querying MongoDB.
+  if (!/^[a-fA-F0-9]{24}$/.test(postId)) {
+    return res.status(400).json({
+      error: "Invalid post ID."
+    });
+  }
+
+  // The author comes from server configuration, not the request body.
+  if (!devUserId || !/^[a-fA-F0-9]{24}$/.test(devUserId)) {
+    return next(new Error("DEV_USER_ID is missing or invalid."));
+  }
+
+  Post.findById(postId)
+    .then((post) => {
+      // Do not create a comment referencing a missing post.
+      if (!post) {
+        return res.status(404).json({
+          error: "Post not found."
+        });
+      }
+
+      return User.findById(devUserId)
+        .then((user) => {
+          if (!user) {
+            throw new Error(
+              "The User configured by DEV_USER_ID was not found."
+            );
+          }
+
+          // Validation has already checked and trimmed the content.
+          // Explicitly choose the parent and author rather than copying the body.
+          const comment = new Comment({
+            content: req.body.content,
+            postId: post._id,
+            userId: user._id
+          });
+
+          return comment.save();
+        })
+        .then((savedComment) => {
+          // Respond only after MongoDB has saved the comment.
+          res.status(201).json({ comment: savedComment });
+        });
+    })
+    .catch(next);
+};
+
+module.exports = { getPostComments, createComment };
