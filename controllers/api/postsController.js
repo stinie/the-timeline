@@ -74,4 +74,42 @@ const createPost = (req, res, next) => {
     .catch(next);
 };
 
-module.exports = { getAllPosts, getOnePost, createPost };
+// Find an existing post, update its content, and return the saved post.
+const updatePost = (req, res, next) => {
+  const postId = req.params.id;
+
+  // Reject malformed IDs before querying MongoDB.
+  if (!/^[a-fA-F0-9]{24}$/.test(postId)) {
+    return res.status(400).json({
+      error: "Invalid post ID."
+    });
+  }
+
+  Post.findById(postId)
+    .then((post) => {
+      // A correctly formatted ID may still have no matching post.
+      if (!post) {
+        return res.status(404).json({
+          error: "Post not found."
+        });
+      }
+
+      // Validation has already checked and trimmed this content.
+      // Update only content, preserving the existing author.
+      post.content = req.body.content;
+
+      // Wait for MongoDB to save before sending the success response.
+      return post.save().then((savedPost) => {
+        res.status(200).json({ post: savedPost });
+      });
+    })
+    // Forward unexpected errors to the existing JSON error handler.
+    .catch(next);
+};
+
+module.exports = {
+  getAllPosts,
+  getOnePost,
+  createPost,
+  updatePost
+};

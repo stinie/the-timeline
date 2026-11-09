@@ -21,4 +21,15 @@ apiRouter.post(
   postsController.createPost
 );
 
+apiRouter.put(
+  "/posts/:id",
+  // Updates have the same content requirements as new posts.
+  createPostRules,
+  validate((req, res, next, message) => {
+    // Stop invalid requests before they reach the controller.
+    return res.status(422).json({ error: message });
+  }),
+  postsController.updatePost
+);
+
 module.exports = apiRouter;
