@@ -3,6 +3,7 @@ const apiRouter = express.Router();
 const postsController = require("../controllers/api/postsController");
 const { createPostRules } = require("../validators/post");
 const validate = require("../middleware/validate");
+const commentsController = require("../controllers/api/commentsController");
 
 // server.js adds the /api prefix, so this becomes GET /api/posts.
 apiRouter.get("/posts", postsController.getAllPosts);
@@ -72,5 +73,11 @@ apiRouter.patch(
 
 // DELETE needs only the URL ID, so no content validator is required.
 apiRouter.delete("/posts/:id", postsController.deletePost);
+
+// The :postId URL value becomes req.params.postId in the controller.
+apiRouter.get(
+  "/posts/:postId/comments",
+  commentsController.getPostComments
+);
 
 module.exports = apiRouter;
