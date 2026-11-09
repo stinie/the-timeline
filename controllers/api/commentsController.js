@@ -118,8 +118,38 @@ const updateComment = (req, res, next) => {
     .catch(next);
 };
 
+// Delete one comment without changing its parent post or other comments.
+const deleteComment = (req, res, next) => {
+  const commentId = req.params.id;
+
+  // Reject malformed IDs before querying MongoDB.
+  if (!/^[a-fA-F0-9]{24}$/.test(commentId)) {
+    return res.status(400).json({
+      error: "Invalid comment ID."
+    });
+  }
+
+  // Match this comment's own _id, rather than its parent postId.
+  Comment.findByIdAndDelete(commentId)
+    .then((deletedComment) => {
+      // No matching document means nothing was deleted.
+      if (!deletedComment) {
+        return res.status(404).json({
+          error: "Comment not found."
+        });
+      }
+
+      // The database deletion has finished before we confirm success.
+      res.status(200).json({
+        message: "Comment deleted successfully."
+      });
+    })
+    .catch(next);
+};
+
 module.exports = {
   getPostComments,
   createComment,
-  updateComment
+  updateComment,
+  deleteComment
 };
