@@ -123,4 +123,41 @@ apiRouter.put(
   commentsController.updateComment
 );
 
+// PUT normally replaces a resource's editable representation, while PATCH
+// applies a partial update. In this learning project, our PUT endpoint
+// updates only the comment's content, so it behaves more like PATCH.
+// Both methods reuse the same controller because content is the only
+// editable field; the author and parent post remain unchanged.
+apiRouter.patch(
+  "/comments/:id",
+  (req, res, next) => {
+    const body = req.body;
+
+    // Expect an object containing the field to update.
+    if (!body || typeof body !== "object" || Array.isArray(body)) {
+      return res.status(422).json({
+        error: "Send a JSON object containing content."
+      });
+    }
+
+    // Reject protected and unknown fields before reaching the controller.
+    const allowedFields = ["content"];
+
+    if (Object.keys(body).some((field) => !allowedFields.includes(field))) {
+      return res.status(422).json({
+        error: "Only content may be updated."
+      });
+    }
+
+    next();
+  },
+  // Content is the only editable field, so reuse its existing rules.
+  createCommentRules,
+  validate((req, res, next, message) => {
+    return res.status(422).json({ error: message });
+  }),
+  // This controller updates only content and preserves the other fields.
+  commentsController.updateComment
+);
+
 module.exports = apiRouter;
