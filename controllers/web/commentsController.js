@@ -1,11 +1,11 @@
 // Import the Post model to find the post receiving the comment.
-const Post = require("../models/post");
+const Post = require("../../models/post");
 
 // Import the Comment model to create and save comments.
-const Comment = require("../models/comment");
+const Comment = require("../../models/comment");
 
 // Import the User model to verify that the comment author exists.
-const User = require("../models/user");
+const User = require("../../models/user");
 
 // Handler for creating a new comment on a post.
 const createCommentHandler = (req, res, next) => {

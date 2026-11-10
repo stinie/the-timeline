@@ -22,7 +22,7 @@ const errorHandler = (err, req, res, next) => {
   }
 
   if (safeStatus === 404) {
-    return res.status(404).render("404", {
+    return res.status(404).render("errors/404", {
       title: "Page not found"
     });
   }
@@ -31,7 +31,7 @@ const errorHandler = (err, req, res, next) => {
     console.error("Application error:", err);
   }
 
-  res.status(safeStatus).render("error", {
+  res.status(safeStatus).render("errors/error", {
     title: safeStatus === 500 ? "Server Error" : "Request Error"
   });
 };

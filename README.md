@@ -71,3 +71,7 @@ Implemented API endpoints for retrieving, creating, updating and deleting posts 
 Tested the API using Postman, including request validation, invalid IDs, missing resources and error responses.
 
 The API and web interface share the same MongoDB database.
+
+## Assignment 5 — Authentication
+
+Reorganized the project structure to separate web and API components, preparing for shared services and user authentication.

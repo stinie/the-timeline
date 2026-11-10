@@ -1,11 +1,11 @@
 // Create an Express router to define routes for posts.
 const express = require("express");
 const postsRouter = express.Router();
-const postsController = require("../controllers/postsController");
-const commentsController = require("../controllers/commentsController");
-const validate = require("../middleware/validate");
-const { createPostRules } = require("../validators/post");
-const { createCommentRules } = require("../validators/comment");
+const postsController = require("../../controllers/web/postsController");
+const commentsController = require("../../controllers/web/commentsController");
+const validate = require("../../middleware/validate");
+const { createPostRules } = require("../../validators/post");
+const { createCommentRules } = require("../../validators/comment");
 
 /*
 THE TIMELINE — POST ROUTES

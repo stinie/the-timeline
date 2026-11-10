@@ -1,11 +1,11 @@
 // Import the Post model to retrieve posts from MongoDB.
-const Post = require("../models/post");
+const Post = require("../../models/post");
 
 // Import the User model to look up the default post author.
-const User = require("../models/user");
+const User = require("../../models/user");
 
 // Import the Comment model to delete comments belonging to a post.
-const Comment = require("../models/comment");
+const Comment = require("../../models/comment");
 
 // Define success messages in one place for posts and comments.
 const successMessages = {
@@ -67,7 +67,7 @@ const listPostsHandler = (req, res, next) => {
       }));
 
       // Render the homepage with posts and a success message derived from the URL query.
-      res.render("index", {
+      res.render("posts/index", {
         posts: formattedPosts,
         title: "Home",
         postsError: null,
@@ -128,7 +128,7 @@ const showPostHandler = (req, res, next) => {
         return next(error);
       }
 
-      res.render("show", {
+      res.render("posts/show", {
         title: "Show One Post",
         post: {
           ...post,
@@ -184,7 +184,7 @@ const editPostHandler = (req, res, next) => {
         return next(error);
       }
 
-      res.render("edit", {
+      res.render("posts/edit", {
         title: "Edit Post",
         post: {
           ...post,

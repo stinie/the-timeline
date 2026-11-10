@@ -1,10 +1,10 @@
 const express = require("express");
 const apiRouter = express.Router();
-const postsController = require("../controllers/api/postsController");
-const { createPostRules } = require("../validators/post");
-const validate = require("../middleware/validate");
-const commentsController = require("../controllers/api/commentsController");
-const { createCommentRules } = require("../validators/comment");
+const postsController = require("../../controllers/api/postsController");
+const { createPostRules } = require("../../validators/post");
+const validate = require("../../middleware/validate");
+const commentsController = require("../../controllers/api/commentsController");
+const { createCommentRules } = require("../../validators/comment");
 
 // server.js adds the /api prefix, so this becomes GET /api/posts.
 apiRouter.get("/posts", postsController.getAllPosts);

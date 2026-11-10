@@ -17,10 +17,10 @@ const PORT = process.env.PORT || 3000;
 const connectDB = require("./config/database");
 
 // Load the posts router.
-const postsRouter = require("./routes/postsRouter");
+const postsRouter = require("./routes/web/postsRouter");
 
 // Load the api router.
-const apiRouter = require("./routes/apiRouter");
+const apiRouter = require("./routes/api/postsRouter");
 
 // Load the error handler middleware.
 const errorHandler = require("./middleware/errorHandler");
@@ -45,7 +45,7 @@ app.use(express.static("public"));
 
 // Render the 404 page for requests not handled by earlier routes or static files.
 app.use((req, res) => {
-  res.status(404).render("404", { title: "Page not found" });
+  res.status(404).render("errors/404", { title: "Page not found" });
 });
 
 // Handle errors forwarded from routes and middleware.
