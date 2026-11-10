@@ -18,13 +18,17 @@ Create a private `.env` file in the project root:
 
 ```dotenv
 MONGODB_URI=mongodb+srv://<username>:<password>@<cluster-host>/
+DEV_USER_ID=<existing-mongodb-user-id>
 ```
 
 Replace the placeholders with your MongoDB Atlas credentials. The database user needs read/write access to `the-timeline`, and Atlas must allow your IP address.
 
-Keep `.env` excluded from Git.
+`DEV_USER_ID` must contain the MongoDB ObjectId of an existing user in the database. The application uses this development user when creating posts and comments, until authentication is implemented in Assignment 5.
+
+Keep `.env` excluded from Git. Do not commit your actual credentials or private `.env` file.
 
 Start the development server:
+
 
 ```bash
 npm run dev
@@ -57,3 +61,13 @@ Replaced JSON storage with MongoDB Atlas and Mongoose. Implemented and manually 
 ## Assignment 3 — Comments
 
 Implemented User–Post–Comment relationships and server-side validation for all forms, requiring a minimum of 25 characters for posts and comments.
+
+## Assignment 4 — API
+
+Extended The Timeline with a REST API that provides JSON responses alongside the existing EJS-based web interface.
+
+Implemented API endpoints for retrieving, creating, updating and deleting posts using the HTTP methods GET, POST, PUT, PATCH and DELETE.
+
+Tested the API using Postman, including request validation, invalid IDs, missing resources and error responses.
+
+The API and web interface share the same MongoDB database.
