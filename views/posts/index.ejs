@@ -16,12 +16,9 @@
             <p class="intro">
               Welcome to The Timeline! This is a simple message board.
             </p>
-            <!--
-              TESTING SERVER-SIDE VALIDATION
-              Temporarily add "novalidate" to this form to bypass the browser's
-              built-in HTML validation and test Express-validator on the server.
-              Remove "novalidate" afterwards to restore browser-side validation.
-            -->
+            <%# Show the post form only when a user is logged in. %>
+            <% if (currentUser) { %>
+            <%# Test server validation: add novalidate to the form; remove after testing. %>
             <form action="/posts" method="POST" class="post-form" aria-label="Post a message">
               <label for="content">Post a message</label>
               <%# Testing: Temporarily remove minlength="25" to test server-side validation. Restore it afterwards. %>
@@ -33,6 +30,7 @@
               <% } %>
               <button type="submit">Post a message</button>
             </form>
+            <% } %>
           </article>
 
           <% if (postsError) { %>
@@ -52,7 +50,7 @@
           <% } %>
 
           <% posts.forEach(post=> { %>
-          <article class="post">
+          <article class="post timeline-post">
           <h2 class="post-meta">
             <%= post.userId ? `${post.userId.firstName} ${post.userId.lastName}` : "No Author" %>
              — 
@@ -79,7 +77,8 @@
             </article>
             <% }) %>
 
-            <!-- New comment form -->
+            <%# Show the comments form only when a user is logged in. %>
+            <% if (currentUser) { %>
             <form action="/posts/<%= post._id %>/comments" method="POST" class="comment-form" aria-label="Post a comment">
               <label for="comment-<%= post._id %>">Post a comment</label>
               <%# Testing: Temporarily remove minlength="25" to test server-side validation. Restore it afterwards. %>
@@ -89,6 +88,7 @@
               <% } %>
               <button type="submit">Post a comment</button>
             </form>
+            <% } %>
           </section><!-- End Comments -->
 
           </article>

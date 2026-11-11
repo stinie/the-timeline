@@ -87,7 +87,7 @@ footer {
 }
 
 .post-body {
-  margin-left: 1rem;
+  margin-top: 0.2rem;
   font-size: 1.125rem;
 }
 
@@ -164,7 +164,6 @@ footer {
 
 .comments {
   margin-top: 1rem;
-  margin-left: 1rem;
   padding-left: 1rem;
   border-left: 2px solid #ddd;
 }
@@ -299,4 +298,15 @@ footer {
 
 .account-nav button img {
   display: block;
+}
+
+/* Alternate soft pastel backgrounds between timeline posts. */
+.timeline-post {
+  padding: 1.5rem;
+  border-radius: 1rem;
+  background-color: #e5f2ed; /* Pastel mint */
+}
+
+.timeline-post:nth-child(even of .timeline-post) {
+  background-color: #eee9f8; /* Pastel lavender */
 }

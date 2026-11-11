@@ -97,6 +97,7 @@ const createPostHandler = (req, res, next) => {
 // Retrieve one post by its URL ID and render the full message.
 const showPostHandler = (req, res, next) => {
   Post.findById(req.params.id)
+    .populate("userId", "firstName lastName")
     .lean()
     // .then(() => {
     //   throw new Error("TEST: centralized error handling");

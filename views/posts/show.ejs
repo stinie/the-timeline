@@ -13,22 +13,27 @@
     <main>
 
       <article class="post">
-          <p class="post-meta">
-            <%= post.formattedDate %>
-          </p>
+          <h2 class="post-meta">
+            <%= post.userId ? `${post.userId.firstName} ${post.userId.lastName}` : "No Author" %>
+             — 
+            <%= post.formattedDate %> 
+          </h2>
 
           <p class="post-body">
             <%= post.content %>
           </p>
-          <div class="post-actions">
-            <%# Submit a request to delete this post. %>
-            <form action="/posts/<%= post._id %>/delete" method="POST">
-              <button type="submit" class="delete-post-button">Delete</button>
-            </form>
+          <%# Show editing controls only to this post's author. %>
+          <% if (currentUser && post.userId && String(post.userId._id) === String(currentUser._id)) { %>
+            <div class="post-actions">
+              <%# Submit a request to delete this post. %>
+              <form action="/posts/<%= post._id %>/delete" method="POST">
+                <button type="submit" class="delete-post-button">Delete</button>
+              </form>
 
-            <%# Open the edit form for this post. %>
-            <a href="/posts/<%= post._id %>/edit">Edit post</a>
-          </div>
+              <%# Open the edit form for this post. %>
+              <a href="/posts/<%= post._id %>/edit">Edit post</a>
+            </div>
+          <% } %>
       </article>
 
     </main>
