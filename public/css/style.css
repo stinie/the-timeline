@@ -53,6 +53,11 @@ header {
   padding: 1.5rem;
   border-bottom: 0.125rem solid black;
   /* 2px at 16px root font size; using rem for learning. */
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
 }
 
 main {
@@ -199,4 +204,75 @@ footer {
 .comment-form button {
   background: rgb(40 150 70);
   color: white;
+}
+
+
+/* Space the authentication forms within the existing page width. */
+.auth-page {
+  margin-inline: auto;
+  padding: 2rem 1.5rem;
+}
+
+.auth-form {
+  margin-bottom: 2rem;
+}
+
+.auth-form fieldset {
+  min-width: 0;
+  border: 2px solid black;
+  padding: 1.5rem;
+}
+
+.auth-form legend {
+  padding-inline: 0.5rem;
+  font-weight: 600;
+}
+
+/* Match the wireframe with labels beside their inputs. */
+.auth-fields {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  align-items: center;
+  gap: 1rem;
+  max-width: 32rem;
+  margin-inline: auto;
+}
+
+.auth-form input {
+  width: 100%;
+  min-width: 0;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid black;
+  border-radius: 0.25rem;
+  background-color: hsl(46deg 38% 97%);
+  font: inherit;
+}
+
+.auth-form button {
+  grid-column: 2;
+  justify-self: end;
+  padding: 0.5rem 1rem;
+  border: 1px solid black;
+  border-radius: 0.25rem;
+  background-color: rgb(51 112 190);
+  color: white;
+  font: inherit;
+  cursor: pointer;
+}
+
+.auth-form input:focus-visible,
+.auth-form button:focus-visible {
+  outline: 3px solid rgb(51 112 190);
+  outline-offset: 3px;
+}
+
+/* Stack labels and inputs when space is limited. */
+@media (max-width: 540px) {
+  .auth-fields {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .auth-form button {
+    grid-column: 1;
+  }
 }

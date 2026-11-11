@@ -16,6 +16,9 @@ const PORT = process.env.PORT || 3000;
 // Load the database connection function from config/database.js.
 const connectDB = require("./config/database");
 
+// Load the auth router.
+const authRouter = require("./routes/web/authRouter");
+
 // Load the posts router.
 const postsRouter = require("./routes/web/postsRouter");
 
@@ -24,6 +27,7 @@ const apiRouter = require("./routes/api/postsRouter");
 
 // Load the error handler middleware.
 const errorHandler = require("./middleware/errorHandler");
+
 
 // Configure EJS as the template engine for rendering views.
 app.set("view engine", "ejs");
@@ -35,6 +39,9 @@ app.use(morgan("dev")); // Log each incoming request in Morgan's concise "dev" f
 
 // Send requests beginning with /api to the JSON API router.
 app.use("/api", apiRouter);
+
+// Mount it before the posts router, so /login reaches the authentication router first:
+app.use("/", authRouter);
 
 // Let the posts router handle the home page.
 app.use("/", postsRouter);
