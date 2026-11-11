@@ -276,3 +276,27 @@ footer {
     grid-column: 1;
   }
 }
+
+/* Place the logout icon to the right of the welcome message. */
+.account-nav {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.account-nav form {
+  margin: 0;
+}
+
+.account-nav button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+  text-decoration: none;
+}
+
+.account-nav button img {
+  display: block;
+}

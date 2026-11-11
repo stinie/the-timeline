@@ -7,6 +7,9 @@ const express = require("express");
 // Load Morgan, the HTTP request-logging middleware.
 const morgan = require("morgan");
 
+// Read cookies sent by the browser.
+const cookieParser = require("cookie-parser");
+
 // Create the Express app that handles requests and responses.
 const app = express();
 
@@ -28,6 +31,8 @@ const apiRouter = require("./routes/api/postsRouter");
 // Load the error handler middleware.
 const errorHandler = require("./middleware/errorHandler");
 
+// Recognize the user identified by a verified authentication token.
+const loadUser = require("./middleware/loadUser");
 
 // Configure EJS as the template engine for rendering views.
 app.set("view engine", "ejs");
@@ -37,17 +42,17 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json()); // Add JSON body parsing middleware
 app.use(morgan("dev")); // Log each incoming request in Morgan's concise "dev" format.
 
-// Send requests beginning with /api to the JSON API router.
-app.use("/api", apiRouter);
-
-// Mount it before the posts router, so /login reaches the authentication router first:
-app.use("/", authRouter);
-
-// Let the posts router handle the home page.
-app.use("/", postsRouter);
-
 // Serve files from public, such as public/style.css at /style.css.
 app.use(express.static("public"));
+
+// Parse cookies before checking for an authenticated user.
+app.use(cookieParser());
+app.use(loadUser);
+
+// Handle application routes after establishing the current user.
+app.use("/api", apiRouter);
+app.use("/", authRouter);
+app.use("/", postsRouter);
 
 
 // Render the 404 page for requests not handled by earlier routes or static files.

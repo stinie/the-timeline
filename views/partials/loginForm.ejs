@@ -1,6 +1,15 @@
 <form action="/login" method="POST" class="auth-form">
   <fieldset>
+
     <legend>Login</legend>
+    
+    <% if (error) { %>
+      <p class="error" role="alert"><%= error %></p>
+    <% } %>
+
+    <% if (success) { %>
+      <p class="success" role="status"><%= success %></p>
+    <% } %>
 
     <div class="auth-fields">
       <label for="login-email">Email</label>
@@ -9,6 +18,7 @@
         name="email"
         type="email"
         autocomplete="username"
+        value="<%= submittedEmail %>"
         required>
 
       <label for="login-password">Password</label>
