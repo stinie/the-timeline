@@ -1,9 +1,6 @@
 // Import the Post model to retrieve posts from MongoDB.
 const Post = require("../../models/post");
 
-// Import the User model to look up the default post author.
-const User = require("../../models/user");
-
 // Import the Comment model to delete comments belonging to a post.
 const Comment = require("../../models/comment");
 
@@ -81,33 +78,16 @@ const listPostsHandler = (req, res, next) => {
     .catch(next);
 };
 
-// Save a new post using the User configured for development.
+// Save a new post with the authenticated user as its author.
 const createPostHandler = (req, res, next) => {
-  const devUserId = process.env.DEV_USER_ID;
-  // TEST ONLY: Simulate an author who does not exist in MongoDB.
-  // Restore the original DEV_USER_ID line after testing.
-  // const devUserId = "000000000000000000000000";
+  const userId = req.user._id;
 
-  // Only post creation needs DEV_USER_ID to identify the development author.
-  // Check it before querying MongoDB, and forward configuration errors
-  // to the centralized error handler instead of responding here.
-  if (!devUserId || !/^[a-fA-F0-9]{24}$/.test(devUserId)) {
-    return next(new Error("DEV_USER_ID is missing or invalid."));
-  }
+  const post = new Post({
+    content: req.body.content,
+    userId
+  });
 
-  User.findById(devUserId)
-    .then((user) => {
-      if (!user) {
-        throw new Error("The User configured by DEV_USER_ID was not found.");
-      }
-
-      const post = new Post({
-        content: req.body.content,
-        userId: user._id
-      });
-
-      return post.save();
-    })
+  post.save()
     .then(() => {
       res.redirect("/posts?success=created");
     })

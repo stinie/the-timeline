@@ -4,6 +4,7 @@ const postsRouter = express.Router();
 const postsController = require("../../controllers/web/postsController");
 const commentsController = require("../../controllers/web/commentsController");
 const validate = require("../../middleware/validate");
+const { requireAuth } = require("../../middleware/requireAuth");
 const { createPostRules } = require("../../validators/post");
 const { createCommentRules } = require("../../validators/comment");
 
@@ -37,6 +38,7 @@ postsRouter.get("/posts", postsController.listPostsHandler);
 // Create a new post from the Timeline form.
 postsRouter.post(
   "/posts",
+  requireAuth,
   createPostRules,
   validate((req, res, next, message) => {
     res.locals.validationError = message;
@@ -52,15 +54,24 @@ postsRouter.post(
 // Display one post using the ID supplied in the URL.
 postsRouter.get("/posts/:id", postsController.showPostHandler);
 
-// Display the edit form for one post.
-postsRouter.get("/posts/:id/edit", postsController.editPostHandler);
+// Require login before displaying an editing form.
+postsRouter.get(
+  "/posts/:id/edit",
+  requireAuth,
+  postsController.editPostHandler
+);
 
-// Delete one post using the ID supplied in the URL.
-postsRouter.post("/posts/:id/delete", postsController.deletePostHandler);
+// Require login before deleting a post.
+postsRouter.post(
+  "/posts/:id/delete",
+  requireAuth,
+  postsController.deletePostHandler
+);
 
 // Save the edited post.
 postsRouter.post(
   "/posts/:id",
+  requireAuth,
   createPostRules,
   validate((req, res, next, message) => {
     res.locals.validationError = message;
@@ -81,11 +92,12 @@ postsRouter.post(
 // This is intentional for now; improving the check order is deferred.
 postsRouter.post(
   "/posts/:id/comments",
+  requireAuth,
   createCommentRules,
   validate((req, res, next, message) => {
     res.locals.commentValidationError = message;
     res.locals.commentPostId = req.params.id;
-    res.locals.submittedContent =
+    res.locals.submittedComment =
       typeof req.body?.content === "string" ? req.body.content : "";
 
     res.status(422);

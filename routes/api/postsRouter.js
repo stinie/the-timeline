@@ -3,6 +3,7 @@ const apiRouter = express.Router();
 const postsController = require("../../controllers/api/postsController");
 const { createPostRules } = require("../../validators/post");
 const validate = require("../../middleware/validate");
+const { requireApiAuth } = require("../../middleware/requireAuth");
 const commentsController = require("../../controllers/api/commentsController");
 const { createCommentRules } = require("../../validators/comment");
 
@@ -14,6 +15,7 @@ apiRouter.get("/posts/:id", postsController.getOnePost);
 
 apiRouter.post(
   "/posts",
+  requireApiAuth,
   // Check that content is text, trim it, and require at least 25 characters.
   createPostRules,
   validate((req, res, next, message) => {
@@ -77,7 +79,11 @@ apiRouter.patch(
 );
 
 // DELETE needs only the URL ID, so no content validator is required.
-apiRouter.delete("/posts/:id", postsController.deletePost);
+apiRouter.delete(
+  "/posts/:id",
+  requireApiAuth,
+  postsController.deletePost
+);
 
 // The :postId URL value becomes req.params.postId in the controller.
 apiRouter.get(
@@ -165,7 +171,11 @@ apiRouter.patch(
 );
 
 // Deletion needs only the comment ID, so no content validation is required.
-apiRouter.delete("/comments/:id", commentsController.deleteComment);
+apiRouter.delete(
+  "/comments/:id",
+  requireApiAuth,
+  commentsController.deleteComment
+);
 
 // Return JSON when no API route matched the request.
 apiRouter.use((req, res) => {
