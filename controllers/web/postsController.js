@@ -136,7 +136,12 @@ const deletePostHandler = (req, res, next) => {
         error.status = 404;
         return next(error);
       }
-
+      // Allow only the author to edit or delete this post.
+      if (String(post.userId) !== String(req.user._id)) {
+        const error = new Error("You can only edit or delete your own posts.");
+        error.status = 403;
+        return next(error);
+      }
       return Comment.deleteMany({ postId: post._id })
         .then(() => Post.findByIdAndDelete(post._id))
         .then(() => {
@@ -164,7 +169,12 @@ const editPostHandler = (req, res, next) => {
         error.status = 404;
         return next(error);
       }
-
+      // Allow only the author to edit or delete this post.
+      if (String(post.userId) !== String(req.user._id)) {
+        const error = new Error("You can only edit or delete your own posts.");
+        error.status = 403;
+        return next(error);
+      }
       res.render("posts/edit", {
         title: "Edit Post",
         post: {
@@ -190,6 +200,13 @@ const updatePostHandler = (req, res, next) => {
       if (!post) {
         const error = new Error("Post not found");
         error.status = 404;
+        return next(error);
+      }
+
+      // Allow only the author to edit or delete this post.
+      if (String(post.userId) !== String(req.user._id)) {
+        const error = new Error("You can only edit or delete your own posts.");
+        error.status = 403;
         return next(error);
       }
 

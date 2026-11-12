@@ -34,3 +34,22 @@ exports.createToken = (userId) => {
     }
   );
 };
+
+// Hash the password and save only the intended account fields.
+exports.registerUser = async ({
+  username,
+  firstName,
+  lastName,
+  email,
+  password
+}) => {
+  const passwordHash = await bcrypt.hash(password, 10);
+
+  return User.create({
+    username,
+    firstName,
+    lastName,
+    email,
+    password: passwordHash
+  });
+};

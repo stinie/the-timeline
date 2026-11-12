@@ -14,22 +14,20 @@ const getPostComments = (req, res, next) => {
 
   Post.findById(postId)
     .then((post) => {
-      // Check the parent post so a missing post is different from no comments.
+      // Distinguish a missing post from a post without comments.
       if (!post) {
         return res.status(404).json({
           error: "Post not found."
         });
       }
 
-      // Filter by the parent ID and match the website's oldest-first order.
+      // Match the website's oldest-first order.
       return Comment.find({ postId: post._id })
         .sort({ createdAt: 1 })
         .then((comments) => {
-          // find() returns an empty array when the post has no comments.
           res.status(200).json({ comments });
         });
     })
-    // Forward unexpected database errors to the JSON error handler.
     .catch(next);
 };
 
@@ -54,7 +52,6 @@ const createComment = (req, res, next) => {
         });
       }
 
-      // Validation has already checked and trimmed the content.
       // Choose the parent and authenticated author explicitly.
       const comment = new Comment({
         content: req.body.content,
@@ -62,13 +59,12 @@ const createComment = (req, res, next) => {
         userId
       });
 
-      return comment.save()
-        .then((savedComment) => {
-          // Respond only after MongoDB has saved the comment.
-          return res.status(201).json({
-            comment: savedComment
-          });
+      // Respond only after MongoDB has saved the comment.
+      return comment.save().then((savedComment) => {
+        res.status(201).json({
+          comment: savedComment
         });
+      });
     })
     .catch(next);
 };
@@ -86,20 +82,27 @@ const updateComment = (req, res, next) => {
 
   Comment.findById(commentId)
     .then((comment) => {
-      // A correctly formatted ID may still have no matching comment.
       if (!comment) {
         return res.status(404).json({
           error: "Comment not found."
         });
       }
 
+      // Only the author may update this comment.
+      if (String(comment.userId) !== String(req.user._id)) {
+        return res.status(403).json({
+          error: "You can only edit or delete your own comments."
+        });
+      }
+
       // Validation has already checked and trimmed the content.
-      // Assign only this field so the author and parent remain unchanged.
+      // Preserve the existing author and parent post.
       comment.content = req.body.content;
 
-      // Wait for MongoDB to save before confirming the update.
       return comment.save().then((savedComment) => {
-        res.status(200).json({ comment: savedComment });
+        res.status(200).json({
+          comment: savedComment
+        });
       });
     })
     .catch(next);
@@ -116,24 +119,33 @@ const deleteComment = (req, res, next) => {
     });
   }
 
-  // Match this comment's own _id, rather than its parent postId.
-  Comment.findByIdAndDelete(commentId)
-    .then((deletedComment) => {
-      // No matching document means nothing was deleted.
-      if (!deletedComment) {
+  // Retrieve the comment before checking ownership.
+  Comment.findById(commentId)
+    .then((comment) => {
+      if (!comment) {
         return res.status(404).json({
           error: "Comment not found."
         });
       }
 
-      // The database deletion has finished before we confirm success.
-      res.status(200).json({
-        message: "Comment deleted successfully."
+      // Only the author may delete this comment.
+      if (String(comment.userId) !== String(req.user._id)) {
+        return res.status(403).json({
+          error: "You can only edit or delete your own comments."
+        });
+      }
+
+      // Delete only this comment after ownership is confirmed.
+      return Comment.findByIdAndDelete(comment._id).then(() => {
+        res.status(200).json({
+          message: "Comment deleted successfully."
+        });
       });
     })
     .catch(next);
 };
 
+// Make the controllers available to the API router.
 module.exports = {
   getPostComments,
   createComment,

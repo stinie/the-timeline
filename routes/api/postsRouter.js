@@ -27,6 +27,7 @@ apiRouter.post(
 
 apiRouter.put(
   "/posts/:id",
+  requireApiAuth,
   // Updates have the same content requirements as new posts.
   createPostRules,
   validate((req, res, next, message) => {
@@ -42,6 +43,7 @@ apiRouter.put(
 // Both methods preserve the post's author and other unchanged fields.
 apiRouter.patch(
   "/posts/:id",
+  requireApiAuth,
   (req, res, next) => {
     const body = req.body;
 
@@ -93,6 +95,7 @@ apiRouter.get(
 
 apiRouter.post(
   "/posts/:postId/comments",
+  requireApiAuth,
   // Reuse the same content rules as the existing website.
   createCommentRules,
   validate((req, res, next, message) => {
@@ -104,6 +107,7 @@ apiRouter.post(
 
 apiRouter.put(
   "/comments/:id",
+  requireApiAuth,
   (req, res, next) => {
     const body = req.body;
 
@@ -140,6 +144,7 @@ apiRouter.put(
 // editable field; the author and parent post remain unchanged.
 apiRouter.patch(
   "/comments/:id",
+  requireApiAuth,
   (req, res, next) => {
     const body = req.body;
 

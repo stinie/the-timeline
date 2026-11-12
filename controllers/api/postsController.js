@@ -81,6 +81,13 @@ const updatePost = (req, res, next) => {
         });
       }
 
+      // Only the author may update this post.
+      if (String(post.userId) !== String(req.user._id)) {
+        return res.status(403).json({
+          error: "You can only edit or delete your own posts."
+        });
+      }
+
       // Validation has already checked and trimmed this content.
       // Update only content, preserving the existing author.
       post.content = req.body.content;
@@ -109,6 +116,13 @@ const patchPost = (req, res, next) => {
       if (!post) {
         return res.status(404).json({
           error: "Post not found."
+        });
+      }
+
+      // Only the author may update this post.
+      if (String(post.userId) !== String(req.user._id)) {
+        return res.status(403).json({
+          error: "You can only edit or delete your own posts."
         });
       }
 
@@ -143,6 +157,13 @@ const deletePost = (req, res, next) => {
       if (!post) {
         return res.status(404).json({
           error: "Post not found."
+        });
+      }
+
+      // Only the author may delete this post and its comments.
+      if (String(post.userId) !== String(req.user._id)) {
+        return res.status(403).json({
+          error: "You can only edit or delete your own posts."
         });
       }
 

@@ -19,7 +19,7 @@
             <%# Show the post form only when a user is logged in. %>
             <% if (currentUser) { %>
             <%# Test server validation: add novalidate to the form; remove after testing. %>
-            <form action="/posts" method="POST" class="post-form" aria-label="Post a message">
+            <form action="/posts" method="POST" class="post-form post-composer" aria-label="Post a message">
               <label for="content">Post a message</label>
               <%# Testing: Temporarily remove minlength="25" to test server-side validation. Restore it afterwards. %>
               <textarea name="content" id="content" rows="3" minlength="25" placeholder="What's on your mind?" required><%= typeof submittedContent !== "undefined" ? submittedContent : "" %></textarea>

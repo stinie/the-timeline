@@ -9,8 +9,10 @@
 
     <main>
       <article class="post error">
-        <h1>Something went wrong</h1>
-        <p>Please try again later.</p>
+        <%# Show access details when provided; otherwise use a generic error. %>
+        <h1><%= typeof message !== "undefined" ? title : "Something went wrong" %></h1>
+        <p><%= typeof message !== "undefined" ? message : "Please try again later." %></p>
+  
         <a href="/">Back to the Timeline</a>
       </article>
     </main>

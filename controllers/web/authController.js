@@ -81,3 +81,92 @@ exports.showLogin = (req, res) => {
     submittedEmail: ""
   });
 };
+
+// Testing
+// Confirm valid signup input; saving the user comes next.
+// exports.signup = (req, res) => {
+//   return res.render("auth/auth", {
+//     title: "Login and signup",
+//     error: null,
+//     success: null,
+//     submittedEmail: "",
+//     signupError: null,
+//     signupSuccess: "Signup details validated. Account creation comes next.",
+//     signupValues: {
+//       username: req.body.username,
+//       firstName: req.body.firstName,
+//       lastName: req.body.lastName,
+//       email: req.body.email
+//     }
+//   });
+// };
+
+// Create an account after the signup rules have passed.
+exports.signup = async (req, res, next) => {
+  const { username, firstName, lastName, email, password } = req.body;
+
+  // Preserve non-password details if registration fails.
+  const signupValues = {
+    username,
+    firstName,
+    lastName,
+    email
+  };
+
+  try {
+    await authService.registerUser({
+      username,
+      firstName,
+      lastName,
+      email,
+      password
+    });
+
+    return res.status(201).render("auth/auth", {
+      title: "Login and signup",
+      error: null,
+      success: "Account created. You can log in now.",
+      submittedEmail: email,
+      signupError: null,
+      signupSuccess: null,
+      signupValues: {}
+    });
+  } catch (err) {
+    // MongoDB rejects duplicate values in unique indexes.
+    if (err.code === 11000) {
+      const field = Object.keys(err.keyPattern || err.keyValue || {})[0];
+
+      const message =
+        field === "username"
+          ? "That username is already taken"
+          : field === "email"
+            ? "That email is already registered"
+            : "An account with those details already exists";
+
+      return res.status(409).render("auth/auth", {
+        title: "Login and signup",
+        error: null,
+        success: null,
+        submittedEmail: "",
+        signupError: message,
+        signupSuccess: null,
+        signupValues
+      });
+    }
+
+    // Display model validation errors without exposing database details.
+    if (err.name === "ValidationError") {
+      return res.status(422).render("auth/auth", {
+        title: "Login and signup",
+        error: null,
+        success: null,
+        submittedEmail: "",
+        signupError: "Please check your signup details",
+        signupSuccess: null,
+        signupValues
+      });
+    }
+
+    return next(err);
+  }
+};

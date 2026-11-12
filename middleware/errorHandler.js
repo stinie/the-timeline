@@ -27,6 +27,14 @@ const errorHandler = (err, req, res, next) => {
     });
   }
 
+  // Explain why access to another author's post is denied.
+  if (safeStatus === 403) {
+    return res.status(403).render("errors/error", {
+      title: "Access denied",
+      message: err.message
+    });
+  }
+
   if (safeStatus >= 500) {
     console.error("Application error:", err);
   }

@@ -1,0 +1,78 @@
+<form action="/signup" method="POST" class="auth-form">
+  <fieldset>
+    <legend>Sign up</legend>
+
+    <%# Default to empty values when opening the page or submitting login. %>
+    <% const values = typeof signupValues !== "undefined" ? signupValues : {}; %>
+
+    <% if (typeof signupError !== "undefined" && signupError) { %>
+      <p class="error" role="alert"><%= signupError %></p>
+    <% } %>
+
+    <% if (typeof signupSuccess !== "undefined" && signupSuccess) { %>
+      <p class="success" role="status"><%= signupSuccess %></p>
+    <% } %>
+
+    <div class="auth-fields">
+      <label for="signup-username">Username</label>
+      <input
+        id="signup-username"
+        name="username"
+        type="text"
+        autocomplete="username"
+        value="<%= values.username || '' %>"
+        required
+      >
+
+      <label for="signup-first-name">First name</label>
+      <input
+        id="signup-first-name"
+        name="firstName"
+        type="text"
+        autocomplete="given-name"
+        value="<%= values.firstName || '' %>"
+        required
+      >
+
+      <label for="signup-last-name">Last name</label>
+      <input
+        id="signup-last-name"
+        name="lastName"
+        type="text"
+        autocomplete="family-name"
+        value="<%= values.lastName || '' %>"
+        required
+      >
+
+      <label for="signup-email">Email</label>
+      <input
+        id="signup-email"
+        name="email"
+        type="email"
+        autocomplete="email"
+        value="<%= values.email || '' %>"
+        required
+      >
+
+      <label for="signup-password">Password</label>
+      <input
+        id="signup-password"
+        name="password"
+        type="password"
+        autocomplete="new-password"
+        required
+      >
+
+      <label for="signup-confirm-password">Confirm password</label>
+      <input
+        id="signup-confirm-password"
+        name="confirmPassword"
+        type="password"
+        autocomplete="new-password"
+        required
+      >
+
+      <button type="submit">Sign up</button>
+    </div>
+  </fieldset>
+</form>

@@ -15,18 +15,22 @@ body {
   font-size: 16px;
   line-height: 1.6;
 }
+
 a:visited,
 a:link {
   color: hsl(30deg 53% 10%);
   transition: opacity 0.2s ease;
 }
+
 a:hover {
   opacity: 0.8;
 }
+
 header a {
   text-decoration: none;
   font-weight: 800;
 }
+
 h1,
 h2,
 textarea,
@@ -99,6 +103,11 @@ footer {
   color: green;
 }
 
+.error p {
+  margin-bottom: 2em;
+}
+
+
 /* Stack the label, message field and submit button in separate rows. */
 .post-form {
   display: grid;
@@ -107,10 +116,24 @@ footer {
   margin-top: 1rem;
 }
 
+/* Shared behavior for creating and editing posts. */
 .post-form textarea {
   width: 100%;
   font: inherit;
   resize: vertical;
+}
+
+/* Give only the homepage composer the offset-shadow style. */
+.post-composer textarea {
+  padding: 1rem;
+  border: 2px solid #18191d;
+  border-radius: 1rem;
+  background-color: #aad8ff;
+  box-shadow: 5px 5px 0 #18191d;
+}
+
+.post-composer textarea:focus-visible {
+  outline: 1px solid rgb(51 112 190);
 }
 
 .post-form button {
@@ -158,6 +181,7 @@ footer {
 .comment-form button {
   justify-self: end;
 }
+
 .comment-form textarea {
   background-color: hsl(46deg 38% 97% / 50%);
 }
@@ -201,7 +225,7 @@ footer {
 
 /* Green comment button */
 .comment-form button {
-  background: rgb(40 150 70);
+  background: rgb(45 205 144);
   color: white;
 }
 
@@ -300,13 +324,35 @@ footer {
   display: block;
 }
 
-/* Alternate soft pastel backgrounds between timeline posts. */
+/* Alternate backgrounds between timeline posts. */
 .timeline-post {
   padding: 1.5rem;
   border-radius: 1rem;
-  background-color: #e5f2ed; /* Pastel mint */
+  background-color: rgb(239 239 239);
 }
 
 .timeline-post:nth-child(even of .timeline-post) {
-  background-color: #eee9f8; /* Pastel lavender */
+
+  background-color: rgba(239, 239, 239, 0.7)
+
+}
+
+/* Give the logout icon a playful wiggle. */
+.account-nav button:hover img,
+.account-nav button:focus-visible img {
+  animation: logout-wave 1.8s ease-in-out 0.5s 2;
+  transform-origin: center;
+}
+
+@keyframes logout-wave {
+  0%, 100% { transform: rotate(0deg); }
+  20%, 60% { transform: rotate(15deg); }
+  40%, 80% { transform: rotate(-10deg); }
+}
+
+/* Respect the user's reduced-motion preference. */
+@media (prefers-reduced-motion: reduce) {
+  .account-nav button img {
+    animation: none;
+  }
 }
