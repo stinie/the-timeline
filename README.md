@@ -74,4 +74,4 @@ The API and web interface share the same MongoDB database.
 
 ## Assignment 5 — Authentication
 
-Reorganized the project structure to separate web and API components, preparing for shared services and user authentication.
+Added registration, JWT login and logout, and password hashing with bcrypt. Guests can view posts, while logged-in users can create posts and comments and edit or delete their own content. The header displays the logged-in user’s name and a logout button. Tested through the website and Postman.
