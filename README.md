@@ -1,6 +1,6 @@
 # The Timeline
 
-A learning project by Christine Fürst, developed through five assignments using Node.js, Express, EJS and MongoDB.
+A learning project by Christine Fürst, developed through five backend assignments using Node.js, Express, EJS and MongoDB, now continuing with React.
 
 One evolving application, with each development stage preserved in its own Git branch.
 
@@ -8,7 +8,7 @@ One evolving application, with each development stage preserved in its own Git b
 
 Requires Node.js 20.19 or newer and npm.
 
-Install dependencies:
+Install the backend dependencies from the project root:
 
 ```bash
 npm install
@@ -18,17 +18,17 @@ Create a private `.env` file in the project root:
 
 ```dotenv
 MONGODB_URI=mongodb+srv://<username>:<password>@<cluster-host>/
-DEV_USER_ID=<existing-mongodb-user-id>
+PORT=3000
+JWT_SECRET=<your-random-signing-secret>
 ```
 
-Replace the placeholders with your MongoDB Atlas credentials. The database user needs read/write access to `the-timeline`, and Atlas must allow your IP address.
+Replace the placeholders with your MongoDB Atlas credentials and a secure JWT signing secret. The database user needs read/write access to `the-timeline`, and Atlas must allow your IP address.
 
-`DEV_USER_ID` must contain the MongoDB ObjectId of an existing user in the database. The application uses this development user when creating posts and comments, until authentication is implemented in Assignment 5.
+Authentication now identifies users through login and JWT cookies, so `DEV_USER_ID` is no longer needed.
 
-Keep `.env` excluded from Git. Do not commit your actual credentials or private `.env` file.
+Keep `.env` excluded from Git. Never commit your credentials or signing secret.
 
-Start the development server:
-
+Start the backend:
 
 ```bash
 npm run dev
@@ -36,19 +36,37 @@ npm run dev
 
 Open http://localhost:3000.
 
-The development script uses Nodemon. Alternatively, run `npm start` to start Node.js directly. The application starts listening only after connecting to MongoDB.
+The development script uses Nodemon. Alternatively, run `npm start`. The application starts listening after connecting to MongoDB.
+
+### React frontend
+
+The React application has its own dependencies and development server.
+
+From the project root:
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+Open the local URL displayed by Vite, usually http://localhost:5173.
+
+The backend and frontend run separately during development. Both need to be running once React is connected to the Express API.
 
 ## Development stages
 
-Each assignment builds on the previous one. Completed stages are preserved in separate branches, while `main` holds the latest completed assignment.
+The first five assignments belong to the Node.js backend course. The React course continues from the completed authentication stage.
 
 | Assignment | Branch | Focus |
 | --- | --- | --- |
-| 1 | `json` | JSON and EJS |
-| 2 | `database` | MongoDB CRUD |
-| 3 | `comments` | Comments |
-| 4 | `api` | API |
-| 5 | `authentication` | Authentication |
+| Backend 1 | `json` | JSON and EJS |
+| Backend 2 | `database` | MongoDB CRUD |
+| Backend 3 | `comments` | Comments |
+| Backend 4 | `api` | REST API |
+| Backend 5 | `authentication` | Authentication |
+| React 3 | `react-frontend` | React frontend for The Timeline |
+
 
 ## Assignment 1 — JSON
 
@@ -75,3 +93,44 @@ The API and web interface share the same MongoDB database.
 ## Assignment 5 — Authentication
 
 Added registration, JWT login and logout, and password hashing with bcrypt. Guests can view posts, while logged-in users can create posts and comments and edit or delete their own content. The header displays the logged-in user’s name and a logout button. Tested through the website and Postman.
+
+---
+
+## React Assignment 3 — The Timeline
+
+**Branch:** `react-frontend`
+
+This assignment builds on Backend Assignment 5 (`authentication`).
+
+I built a React frontend with Vite that uses my existing Express JSON API to create, display, edit and delete posts and comments.
+
+The original EJS frontend remains available.
+
+### Project structure
+
+- **Backend:** Express, in the project root.
+- **Frontend:** React and Vite, in `frontend/`.
+
+Both have their own `package.json` and dependencies.
+
+I considered npm workspaces but chose to avoid restructuring the project during this assignment. My priority is learning React and understanding how it communicates with my existing backend.
+
+
+### Authentication during development
+
+I reuse the existing Express login rather than building a separate React login interface.
+
+Log in at `http://localhost:3000/login`, then open React at `http://localhost:5173`.
+
+The Vite proxy forwards API requests to Express, which handles authentication through the existing login cookie.
+
+React does not yet track which user is logged in.
+
+### Running both servers
+
+Run `npm run dev` in two terminals:
+
+- **Project root:** Express on port `3000`.
+- **`frontend/`:** Vite on port `5173`.
+
+Keep both servers running during development.

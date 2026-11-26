@@ -6,6 +6,7 @@ const Comment = require("../../models/comment");
 // Retrieve posts from MongoDB and return them as JSON.
 const getAllPosts = (req, res, next) => {
   Post.find()
+    .populate("userId", "username firstName lastName")
     .sort({ createdAt: -1 })
     .then((posts) => {
       // An empty database produces { posts: [] }, which is still a success.
@@ -27,6 +28,7 @@ const getOnePost = (req, res, next) => {
   }
 
   Post.findById(postId)
+    .populate("userId", "username firstName lastName")
     .then((post) => {
       // A valid ID format does not guarantee that the post exists.
       if (!post) {
@@ -54,10 +56,12 @@ const createPost = (req, res, next) => {
 
   post.save()
     .then((savedPost) => {
-      // Respond only after MongoDB has saved the post.
+      return savedPost.populate("userId", "username firstName lastName");
+    })
+    .then((savedPost) => {
+      // Respond with the saved post and its author's username.
       res.status(201).json({ post: savedPost });
     })
-    // Forward database errors to the JSON error handler.
     .catch(next);
 };
 
@@ -93,9 +97,14 @@ const updatePost = (req, res, next) => {
       post.content = req.body.content;
 
       // Wait for MongoDB to save before sending the success response.
-      return post.save().then((savedPost) => {
-        res.status(200).json({ post: savedPost });
-      });
+      return post.save()
+        .then((savedPost) => {
+          return savedPost.populate("userId", "username firstName lastName");
+        })
+        .then((savedPost) => {
+          // Return the updated post with its author's username.
+          res.status(200).json({ post: savedPost });
+        });
     })
     // Forward unexpected errors to the existing JSON error handler.
     .catch(next);
@@ -133,9 +142,14 @@ const patchPost = (req, res, next) => {
       }
 
       // Saving this document preserves fields we have not assigned.
-      return post.save().then((savedPost) => {
-        res.status(200).json({ post: savedPost });
-      });
+      return post.save()
+        .then((savedPost) => {
+          return savedPost.populate("userId", "username firstName lastName");
+        })
+        .then((savedPost) => {
+          // Return the updated post with its author's username.
+          res.status(200).json({ post: savedPost });
+        });
     })
     .catch(next);
 };

@@ -23,6 +23,7 @@ const getPostComments = (req, res, next) => {
 
       // Match the website's oldest-first order.
       return Comment.find({ postId: post._id })
+        .populate("userId", "username firstName lastName")
         .sort({ createdAt: 1 })
         .then((comments) => {
           res.status(200).json({ comments });
@@ -60,11 +61,16 @@ const createComment = (req, res, next) => {
       });
 
       // Respond only after MongoDB has saved the comment.
-      return comment.save().then((savedComment) => {
-        res.status(201).json({
-          comment: savedComment
+      return comment.save()
+        .then((savedComment) => {
+          return savedComment.populate("userId", "username firstName lastName");
+        })
+        .then((savedComment) => {
+          // Return the saved comment with its author's username.
+          res.status(201).json({
+            comment: savedComment
+          });
         });
-      });
     })
     .catch(next);
 };
@@ -99,11 +105,17 @@ const updateComment = (req, res, next) => {
       // Preserve the existing author and parent post.
       comment.content = req.body.content;
 
-      return comment.save().then((savedComment) => {
-        res.status(200).json({
-          comment: savedComment
+      return comment.save()
+        .then((savedComment) => {
+          return savedComment.populate("userId", "username firstName lastNameername");
+          
+        })
+        .then((savedComment) => {
+          // Return the updated comment with its author's username.
+          res.status(200).json({
+            comment: savedComment
+          });
         });
-      });
     })
     .catch(next);
 };
