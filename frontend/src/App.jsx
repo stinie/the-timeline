@@ -1,6 +1,7 @@
 import { HeartCat } from "trazo-stickers";
-import { useEffect, useState } from "react";
-import { getPosts, getCurrentUser } from "./messageApi";
+import { useEffect, useRef, useState } from "react";
+import { getPosts, getCurrentUser, login, logout } from "./messageApi";
+import LoginForm from "./components/LoginForm";
 import NewPost from "./components/NewPost";
 import PostBoard from "./components/PostBoard";
 import "./App.css";
@@ -12,6 +13,10 @@ function App() {
   const [currentUser, setCurrentUser] = useState(null);
   const [checkingAuth, setCheckingAuth] = useState(true);
   const [authError, setAuthError] = useState("");
+  const [loggingOut, setLoggingOut] = useState(false);
+  const [logoutError, setLogoutError] = useState("");
+  const authCheckController = useRef(null);
+  const authActionInProgress = useRef(false);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -41,32 +46,34 @@ function App() {
   }, []);
 
   useEffect(() => {
-    const controller = new AbortController();
-    let requestInProgress = false;
+    let active = true;
 
     async function loadCurrentUser() {
-      if (requestInProgress || controller.signal.aborted) {
+      if (!active || authActionInProgress.current || authCheckController.current) {
         return;
       }
 
-      requestInProgress = true;
+      const controller = new AbortController();
+      authCheckController.current = controller;
       setCheckingAuth(true);
       setAuthError("");
 
       try {
         const user = await getCurrentUser(controller.signal);
 
-        if (!controller.signal.aborted) {
+        if (active && !controller.signal.aborted) {
           setCurrentUser(user);
         }
       } catch (err) {
-        if (!controller.signal.aborted) {
+        if (active && !controller.signal.aborted) {
           setCurrentUser(null);
           setAuthError(err.message || "Unable to check your login status.");
         }
       } finally {
-        requestInProgress = false;
-        if (!controller.signal.aborted) {
+        if (authCheckController.current === controller) {
+          authCheckController.current = null;
+        }
+        if (active && !controller.signal.aborted) {
           setCheckingAuth(false);
         }
       }
@@ -84,10 +91,56 @@ function App() {
     loadCurrentUser();
 
     return () => {
+      active = false;
       document.removeEventListener("visibilitychange", handleVisibilityChange);
-      controller.abort();
+      authCheckController.current?.abort();
+      authCheckController.current = null;
     };
   }, []);
+
+  async function handleLogin(email, password) {
+    if (authActionInProgress.current) {
+      return;
+    }
+
+    authActionInProgress.current = true;
+    authCheckController.current?.abort();
+    authCheckController.current = null;
+    setCheckingAuth(false);
+    setAuthError("");
+    setLogoutError("");
+
+    try {
+      const user = await login(email, password);
+      setCurrentUser(user);
+    } finally {
+      authActionInProgress.current = false;
+    }
+  }
+
+  async function handleLogout() {
+    if (authActionInProgress.current) {
+      return;
+    }
+
+    authActionInProgress.current = true;
+    authCheckController.current?.abort();
+    authCheckController.current = null;
+    setCheckingAuth(false);
+    setAuthError("");
+    setLogoutError("");
+    setLoggingOut(true);
+
+    try {
+      const user = await logout();
+      setCurrentUser(user);
+    } catch (err) {
+      setLogoutError(err.message || "Unable to log out.");
+    } finally {
+      authActionInProgress.current = false;
+      setLoggingOut(false);
+    }
+  }
 
   function handlePostCreated(savedPost) {
     // Keep the newest post first.
@@ -120,22 +173,16 @@ function App() {
               Want to join the conversation? Log in to write postcards and
               comments.
             </p>
-            <p>
-              <a
-                href="http://localhost:3000/login"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Log in through the backend
-              </a>
-              , then return here.
-            </p>
+            <LoginForm onSubmit={handleLogin} />
           </>
         )}
         {!checkingAuth && !authError && currentUser && (
-          <form action="http://localhost:3000/logout" method="POST">
-            <button type="submit">Log out</button>
-          </form>
+          <>
+            <button type="button" onClick={handleLogout} disabled={loggingOut}>
+              {loggingOut ? "Logging out…" : "Log out"}
+            </button>
+            {logoutError && <p role="alert">{logoutError}</p>}
+          </>
         )}
       </header>
 

@@ -11,6 +11,12 @@ const authController = require("../../controllers/api/authController");
 // Return the current user, or null for guests.
 apiRouter.get("/me", authController.getCurrentUser);
 
+// Authenticate using the existing service and return JSON.
+apiRouter.post("/login", authController.login);
+
+// Clear the authentication cookie and return JSON.
+apiRouter.post("/logout", authController.logout);
+
 // server.js adds the /api prefix, so this becomes GET /api/posts.
 apiRouter.get("/posts", postsController.getAllPosts);
 

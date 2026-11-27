@@ -36,6 +36,30 @@ export async function getCurrentUser(signal) {
   return data.user;
 }
 
+export async function login(email, password) {
+  const data = await requestJson(
+    "/api/login",
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
+    },
+    "Unable to log in."
+  );
+
+  return data.user;
+}
+
+export async function logout() {
+  const data = await requestJson(
+    "/api/logout",
+    { method: "POST" },
+    "Unable to log out."
+  );
+
+  return data.user;
+}
+
 export async function getPosts(signal) {
   const data = await requestJson(
     "/api/posts",

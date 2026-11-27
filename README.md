@@ -113,18 +113,17 @@ The original EJS frontend remains available.
 
 Both have their own `package.json` and dependencies.
 
+I also extended my existing Express API to return author details for posts and comments and to support login, logout and current-user information through JSON endpoints.
+
 I considered npm workspaces but chose to avoid restructuring the project during this assignment. My priority is learning React and understanding how it communicates with my existing backend.
 
+### Authentication
 
-### Authentication during development
+Login and logout are integrated directly into the React application, reusing my existing Express authentication.
 
-I reuse the existing Express login rather than building a separate React login interface.
+React communicates with Express through the JSON API using Axios. Express handles authentication through an HTTP-only cookie, while React tracks the current user.
 
-Log in at `http://localhost:3000/login`, then open React at `http://localhost:5173`.
-
-The Vite proxy forwards API requests to Express, which handles authentication through the existing login cookie.
-
-React does not yet track which user is logged in.
+Everyone can read posts and comments. Logged-in users can create content and edit or delete their own posts and comments.
 
 ### Running both servers
 
@@ -134,3 +133,5 @@ Run `npm run dev` in two terminals:
 - **`frontend/`:** Vite on port `5173`.
 
 Keep both servers running during development.
+
+Open The Timeline at `http://localhost:5173`.
