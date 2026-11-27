@@ -4,15 +4,26 @@
 // This keeps the frontend working until we add user awareness to React.
 // Keep HTTP details here; components own React state and user feedback.
 
+import axios from "axios";
+
 async function requestJson(url, options, fallbackMessage) {
-  const response = await fetch(url, options);
-  const data = await response.json();
+  try {
+    const response = await axios({
+      url,
+      method: options.method,
+      headers: options.headers,
+      data: options.body,
+      signal: options.signal,
+    });
 
-  if (!response.ok) {
-    throw new Error(data.error || fallbackMessage);
+    return response.data;
+  } catch (error) {
+    if (error.response) {
+      throw new Error(error.response.data?.error || fallbackMessage);
+    }
+
+    throw error;
   }
-
-  return data;
 }
 
 export async function getPosts(signal) {

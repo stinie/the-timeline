@@ -63,15 +63,17 @@ function App() {
         <p>A little place to send postcards and exchange thoughts.</p>
 
         <p>
-          To create, edit or delete content,{" "}
+          Want to join the conversation? Log in to write postcards and comments.
+        </p>
+        <p>
           <a
-            href="http://localhost:3000/login"
+            href="http://localhost:3000/"
             target="_blank"
             rel="noopener noreferrer"
           >
-            log in through the backend
+            Log in through the backend
           </a>
-          , then return here. You can only edit or delete your own content.
+          , then return here.
         </p>
       </header>
 
