@@ -6,6 +6,10 @@ const validate = require("../../middleware/validate");
 const { requireApiAuth } = require("../../middleware/requireAuth");
 const commentsController = require("../../controllers/api/commentsController");
 const { createCommentRules } = require("../../validators/comment");
+const authController = require("../../controllers/api/authController");
+
+// Return the current user, or null for guests.
+apiRouter.get("/me", authController.getCurrentUser);
 
 // server.js adds the /api prefix, so this becomes GET /api/posts.
 apiRouter.get("/posts", postsController.getAllPosts);

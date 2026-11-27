@@ -2,7 +2,7 @@ import PostCard from "./PostCard";
 
 // Displays all postcards from the posts array.
 // Creates one PostCard for each post.
-function PostBoard({ posts, onPostSaved, onPostDeleted }) {
+function PostBoard({ posts, currentUser, onPostSaved, onPostDeleted }) {
   return (
     <section aria-label="Postcard board">
       {posts.length === 0 && (
@@ -12,6 +12,7 @@ function PostBoard({ posts, onPostSaved, onPostDeleted }) {
         <PostCard
           key={post._id}
           post={post}
+          currentUser={currentUser}
           onPostSaved={onPostSaved}
           onPostDeleted={onPostDeleted}
         />

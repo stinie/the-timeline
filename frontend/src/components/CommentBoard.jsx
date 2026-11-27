@@ -3,7 +3,7 @@ import { getComments, createComment } from "../messageApi";
 import MessageForm from "./MessageForm";
 import CommentCard from "./CommentCard";
 
-function CommentBoard({ postId }) {
+function CommentBoard({ postId, currentUser }) {
   const [comments, setComments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -39,24 +39,26 @@ function CommentBoard({ postId }) {
     const savedComment = await createComment(postId, content);
 
     // Append the saved comment to preserve oldest-first order.
-    setComments((currentComments) => [
-      ...currentComments,
-      savedComment,
-    ]);
+    setComments((currentComments) => [...currentComments, savedComment]);
   }
 
   function handleCommentSaved(updatedComment) {
     setComments((currentComments) =>
       currentComments.map((comment) =>
-        comment._id === updatedComment._id ? updatedComment : comment
-      )
+        comment._id === updatedComment._id ? updatedComment : comment,
+      ),
     );
   }
 
   function handleCommentDeleted(commentId) {
     setComments((currentComments) =>
-      currentComments.filter((comment) => comment._id !== commentId)
+      currentComments.filter((comment) => comment._id !== commentId),
     );
+  }
+
+  // Hide the comment section for guests when there are no comments.
+  if (!loading && !error && comments.length === 0 && !currentUser) {
+    return null;
   }
 
   return (
@@ -75,16 +77,18 @@ function CommentBoard({ postId }) {
             <CommentCard
               key={comment._id}
               comment={comment}
+              currentUser={currentUser}
               onCommentSaved={handleCommentSaved}
               onCommentDeleted={handleCommentDeleted}
             />
           ))}
-
-          <MessageForm
-            label="New comment"
-            submitLabel="Add comment"
-            onSubmit={handleCreateComment}
-          />
+          {currentUser && (
+            <MessageForm
+              label="New comment"
+              submitLabel="Add comment"
+              onSubmit={handleCreateComment}
+            />
+          )}
         </>
       )}
     </section>

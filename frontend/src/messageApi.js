@@ -6,6 +6,7 @@
 
 import axios from "axios";
 
+
 async function requestJson(url, options, fallbackMessage) {
   try {
     const response = await axios({
@@ -24,6 +25,15 @@ async function requestJson(url, options, fallbackMessage) {
 
     throw error;
   }
+}
+
+export async function getCurrentUser(signal) {
+  const data = await requestJson(
+    "/api/me",
+    { signal },
+    "Unable to check your login status."
+  );
+  return data.user;
 }
 
 export async function getPosts(signal) {

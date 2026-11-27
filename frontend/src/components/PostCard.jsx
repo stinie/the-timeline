@@ -4,10 +4,11 @@ import { savePostChanges, deletePost } from "../messageApi";
 import MessageForm from "./MessageForm";
 import CommentBoard from "./CommentBoard";
 
-function PostCard({ post, onPostSaved, onPostDeleted }) {
+function PostCard({ post, currentUser, onPostSaved, onPostDeleted }) {
   const [editing, setEditing] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [error, setError] = useState("");
+  const isOwner = Boolean(currentUser && currentUser._id === post.userId?._id);
 
   async function handleSavePost(content) {
     const savedPost = await savePostChanges(post._id, content);
@@ -36,7 +37,7 @@ function PostCard({ post, onPostSaved, onPostDeleted }) {
         <YellowPencil size={30} title="YellowPencil" />
       </span>
 
-      {editing ? (
+      {isOwner && editing ? (
         <MessageForm
           label="Edit post"
           submitLabel="Save post"
@@ -60,33 +61,34 @@ function PostCard({ post, onPostSaved, onPostDeleted }) {
           </p>
 
           <p className="content">{post.content}</p>
+          {isOwner && (
+            <div className="actions">
+              <button
+                type="button"
+                disabled={deleting}
+                onClick={() => {
+                  setError("");
+                  setEditing(true);
+                }}
+              >
+                Edit
+              </button>
 
-          <div className="actions">
-            <button
-              type="button"
-              disabled={deleting}
-              onClick={() => {
-                setError("");
-                setEditing(true);
-              }}
-            >
-              Edit
-            </button>
-
-            <button
-              type="button"
-              disabled={deleting}
-              onClick={handleDeletePost}
-            >
-              {deleting ? "Deleting…" : "Delete"}
-            </button>
-          </div>
+              <button
+                type="button"
+                disabled={deleting}
+                onClick={handleDeletePost}
+              >
+                {deleting ? "Deleting…" : "Delete"}
+              </button>
+            </div>
+          )}
         </>
       )}
 
       {error && <p role="alert">{error}</p>}
 
-      <CommentBoard postId={post._id} />
+      <CommentBoard postId={post._id} currentUser={currentUser} />
     </article>
   );
 }

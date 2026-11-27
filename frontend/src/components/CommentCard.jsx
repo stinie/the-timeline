@@ -2,10 +2,18 @@ import { useState } from "react";
 import { saveCommentChanges, deleteComment } from "../messageApi";
 import MessageForm from "./MessageForm";
 
-function CommentCard({ comment, onCommentSaved, onCommentDeleted }) {
+function CommentCard({
+  comment,
+  currentUser,
+  onCommentSaved,
+  onCommentDeleted,
+}) {
   const [editing, setEditing] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [error, setError] = useState("");
+  const isOwner = Boolean(
+    currentUser && currentUser._id === comment.userId?._id,
+  );
 
   async function handleSaveComment(content) {
     const savedComment = await saveCommentChanges(comment._id, content);
@@ -30,7 +38,7 @@ function CommentCard({ comment, onCommentSaved, onCommentDeleted }) {
 
   return (
     <article className="comment">
-      {editing ? (
+      {isOwner && editing ? (
         <MessageForm
           label="Edit comment"
           submitLabel="Save comment"
@@ -53,27 +61,28 @@ function CommentCard({ comment, onCommentSaved, onCommentDeleted }) {
             </span>
           </p>
           <p className="content">{comment.content}</p>
+          {isOwner && (
+            <div className="actions">
+              <button
+                type="button"
+                disabled={deleting}
+                onClick={() => {
+                  setError("");
+                  setEditing(true);
+                }}
+              >
+                Edit
+              </button>
 
-          <div className="actions">
-            <button
-              type="button"
-              disabled={deleting}
-              onClick={() => {
-                setError("");
-                setEditing(true);
-              }}
-            >
-              Edit
-            </button>
-
-            <button
-              type="button"
-              disabled={deleting}
-              onClick={handleDeleteComment}
-            >
-              {deleting ? "Deleting…" : "Delete"}
-            </button>
-          </div>
+              <button
+                type="button"
+                disabled={deleting}
+                onClick={handleDeleteComment}
+              >
+                {deleting ? "Deleting…" : "Delete"}
+              </button>
+            </div>
+          )}
         </>
       )}
 
